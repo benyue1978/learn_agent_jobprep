@@ -1,0 +1,26 @@
+{
+  "name": "learn_agent_jobprep",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.13.1",
+  "type": "module",
+  "scripts": {
+    "install-all": "pnpm install",
+    "init:frontend": "pnpm --filter frontend install",
+    "init:backend": "node scripts/init-backend.js",
+    "init": "pnpm run init:frontend && pnpm run init:backend",
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build",
+    "test": "pnpm --filter frontend test",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format",
+    "backend": "cd apps/backend && uvicorn src.main:app --reload"
+  },
+  "workspaces": [
+    "apps/frontend",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
+}

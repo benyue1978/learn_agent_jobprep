@@ -1,0 +1,22 @@
+# Node.js + Next.js
+node_modules/
+pnpm-lock.yaml
+apps/frontend/.next/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# .env
+.env*
+!.env*.example
+
+# Others
+.DS_Store
