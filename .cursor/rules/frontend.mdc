@@ -1,0 +1,88 @@
+---
+description: frontend rule
+alwaysApply: false
+---
+# frontend.mdc
+
+project: JobPrep - Frontend Rules
+
+type: frontend
+framework: nextjs
+router: app
+language: typescript
+styling: tailwind
+ui-library: shadcn
+
+directory: apps/frontend
+
+structure:
+  pages:
+    location: app/
+    notes: 使用 App Router 构建页面，保持文件结构语义清晰（如 /resume/page.tsx）
+  components:
+    location: components/
+    notes: 所有 UI 组件放在此目录，按功能子目录分类（如 /resume/ResumeCard.tsx）
+  lib:
+    location: lib/
+    notes: 放置请求封装（如 api.ts）、DashScope 调用工具、模型结构定义等
+  hooks:
+    location: hooks/
+    notes: 存放复用型逻辑钩子，如 useFetch、useResumeProfile
+  context:
+    location: context/
+    notes: 全局状态管理，控制简历状态 / JD Session / 加载状态等
+  styles:
+    location: styles/
+    notes: Tailwind 全局样式定义，若使用 CSS module 限定作用域
+
+project-specific-pages:
+
+- path: /resume
+    purpose: 上传简历并解析展示结构化信息
+    components:
+      - ResumeUpload
+      - ResumeCard
+      - FieldGroup (复用型字段展示)
+- path: /jd-match
+    purpose: 粘贴 JD → 分析匹配度 → 给出修改建议
+    components:
+      - JDInputBox
+      - MatchResult
+      - SuggestionPanel
+- path: /profile
+    purpose: 用户信息汇总与展示
+    components:
+      - ProfileSection
+      - EditableField
+
+best-practices:
+
+- 使用 Suspense + loading.tsx 实现异步加载状态
+- 每个页面组件应配套 ErrorBoundary
+- 优先使用 shadcn 的 Card, Accordion, AlertDialog 等原子组件
+- 尽量使用 Tailwind + class-merge 简化样式组合
+- 将所有 API 请求封装在 lib/api.ts 中，返回强类型响应
+- 使用 useEffect + async wrapper 搭配状态管理（或 swr）
+- 所有表单和交互应有错误提示与 loading 状态反馈
+
+external-dependencies:
+
+- tailwindcss
+- shadcn/ui
+- lucide-react
+- axios
+- zod
+- clsx
+- react-hook-form (可选)
+
+devscripts:
+  dev: pnpm dev
+  build: pnpm build
+  lint: pnpm lint
+  test: pnpm test
+
+notes:
+
+- 所有数据结构尽量复用后端定义（通过 JSON Schema 或手动对齐）
+- 使用环境变量区分本地和生产接口地址（.env.local）
+- 页面命名保持语义化（/resume, /jd-match, /profile）

@@ -1,0 +1,92 @@
+---
+description: overall structure
+alwaysApply: false
+---
+# 🏗 项目结构与技术选型：JobPrep AI Application
+
+本项目为全栈型 AI 求职助手系统，采用前后端分离架构，结合 LLM 智能与现代 Web 技术，支持高效开发与云端部署。
+
+---
+
+## 1️⃣ 前端（Frontend）
+
+| 项目         | 技术/工具                | 说明                                         |
+|--------------|--------------------------|----------------------------------------------|
+| 框架         | Next.js                  | 现代 React 框架，支持 SSR/SSG               |
+| 语言         | TypeScript               | 类型安全开发                                 |
+| 目录结构     | apps/frontend            | 前端主目录                                   |
+| 样式系统     | Tailwind CSS v4          | 原子化 CSS，快速响应式开发                   |
+| UI 组件库    | shadcn/ui                | 现代化 UI 组件，配合 Tailwind 使用           |
+| API 调用     | axios                    | 统一接口请求                                 |
+| 代码组织     | pages/components/lib     | 遵循约定式目录结构                           |
+| 包管理       | pnpm                     | monorepo 支持，依赖高效管理                  |
+| 部署         | Vercel                   | 云端一键部署，自动 CI/CD                     |
+
+---
+
+## 2️⃣ 后端（Backend）
+
+| 项目         | 技术/工具                | 说明                                         |
+|--------------|--------------------------|----------------------------------------------|
+| 框架         | FastAPI                  | 高性能异步 Web 框架                          |
+| 语言         | Python                   | 主体开发语言                                 |
+| 目录结构     | apps/backend             | 后端主目录                                   |
+| 入口         | src/main.py              | 应用启动入口                                 |
+| 路由         | src/routers/             | 业务路由组织                                 |
+| 服务         | src/services/            | 业务逻辑实现                                 |
+| 数据模型     | src/models/              | Pydantic 数据模型                            |
+| 配置         | src/config.py            | 统一配置管理                                 |
+| LLM 接入     | dashscope-sdk            | 通义 DashScope LLM/Embedding                 |
+| 存储         | SQLite                   | 轻量级本地数据库                             |
+| 包管理       | requirements.txt + venv  | 依赖与虚拟环境                               |
+| 部署         | Fly.io                   | 全球边缘部署，支持持久化存储                 |
+
+---
+
+## 3️⃣ LLM/智能层
+
+| 项目         | 技术/工具                | 说明                                         |
+|--------------|--------------------------|----------------------------------------------|
+| LLM 服务     | DashScope qwen-turbo/qwen-max | 聊天、改写、问答等智能能力              |
+| 向量模型     | DashScope text-embedding-v1   | 文本向量化，支持语义检索/匹配            |
+| Agent 调度   | Python Router/LangGraph       | 多轮任务流、分支式流程控制                |
+
+---
+
+## 4️⃣ DevOps & 工具链
+
+| 项目         | 技术/工具                | 说明                                         |
+|--------------|--------------------------|----------------------------------------------|
+| 包管理       | pnpm workspaces          | 前后端及共享包统一管理                      |
+| 版本控制     | Git + GitHub             | 代码托管与协作                              |
+| CI/CD        | Vercel/Fly.io + GitHub Actions | 自动化部署与测试                        |
+| 开发辅助     | Cursor IDE               | AI 编程、代码理解与重构                     |
+| 容器化       | Docker                   | 本地与云端一致性环境                        |
+
+---
+
+## 5️⃣ 主要依赖
+
+- **前端**：react、tailwindcss v4、shadcn/ui、axios
+- **后端**：fastapi、uvicorn、httpx、dashscope-sdk、pydantic
+
+---
+
+## 6️⃣ 目录与脚本约定
+
+- 前端目录：`apps/frontend`
+- 后端目录：`apps/backend`
+- 启动前端：`pnpm dev --filter frontend`
+- 启动后端：`cd apps/backend && uvicorn src.main:app --reload`
+- 前端测试：`pnpm test --filter frontend`
+- 后端测试：`cd apps/backend && pytest`
+
+---
+
+## 7️⃣ 其他说明
+
+- 所有 LLM 相关调用统一走 DashScope
+- 环境变量集中管理，前后端严格区分
+- 推荐使用 pnpm monorepo 管理多包
+- 前端部署 Vercel，后端部署 Fly.io
+- 支持持久化存储与云端日志监控

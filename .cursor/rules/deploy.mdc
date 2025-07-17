@@ -1,0 +1,88 @@
+---
+description: deployment rules
+alwaysApply: false
+---
+# deploy.mdc
+
+project: JobPrep - Deployment Strategy
+
+type: deployment
+
+frontend:
+  framework: nextjs
+  platform: vercel
+  directory: apps/frontend
+  deployment:
+    strategy: static + serverless functions (Vercel 默认)
+    env-management: .env.local (dev), Vercel Dashboard (prod)
+    custom-domains: optional
+  build:
+    command: pnpm build
+    output-dir: .next
+  preview:
+    auto-deploy: true
+    branch: main / preview
+    env-vars:
+      - DASH_SCOPE_API_PROXY
+      - NEXT_PUBLIC_API_BASE_URL
+
+backend:
+  framework: fastapi
+  platform: fly.io
+  directory: apps/backend
+  deployment:
+    method: docker
+    dockerfile: Dockerfile
+    entrypoint: src/main.py
+    build-args: []
+    healthcheck:
+      path: /healthz
+      type: http
+    env-vars:
+      - DASHSCOPE_API_KEY
+      - APP_ENV=production
+  remote-build: true
+  scaling:
+    strategy: auto
+    regions: global (primary: iad)
+  secrets:
+    managed-by: fly secrets CLI
+    command: fly secrets set DASHSCOPE_API_KEY=sk-xxx
+
+ci-cd:
+  provider: github-actions
+  workflows:
+    - file: .github/workflows/frontend.yml
+      trigger: push to main or frontend/**
+      jobs:
+        - lint
+        - test
+        - deploy to vercel
+    - file: .github/workflows/backend.yml
+      trigger: push to main or backend/**
+      jobs:
+        - test (pytest)
+        - build docker image
+        - deploy to fly.io
+  env-injection:
+    strategy: encrypted secrets (GitHub → Vercel / Fly)
+
+infra:
+  observability: pending
+  logging: console.log (frontend), logging module (backend)
+  error-reporting: placeholder (可集成 Sentry)
+
+testing:
+  smoke-test:
+    backend: GET /api/profile → 200
+    frontend: /demo 页面可展示 mock 数据
+  deploy-test:
+    - GitHub Actions 中触发部署
+    - Fly.io deploy 成功日志出现 `"App is now running"`
+    - Vercel Preview URL 可访问首页并展示结构化字段
+
+notes:
+
+- 所有部署均以 main 分支为准，可支持 preview（dev）环境并行测试
+- 建议在 Fly.io 上使用 remote builder，避免本地 ARM 架构构建问题
+- 使用 dotenv 和 secrets CLI 管理关键凭据，避免硬编码 API Key

@@ -1,0 +1,112 @@
+---
+description: backend rules
+alwaysApply: false
+---
+# backend.mdc
+
+project: JobPrep - Backend Rules
+
+type: backend
+language: python
+framework: fastapi
+directory: apps/backend
+
+structure:
+  entrypoint:
+    file: src/main.py
+    notes: FastAPI 应用的创建与路由注册入口
+
+  routers:
+    location: src/routers/
+    purpose: 组织所有 API 路由（resume, match, session 等）
+    naming: 每个模块一个文件，如 resume.py、match.py
+
+  services:
+    location: src/services/
+    purpose: 编写业务逻辑（解析简历、调用 LLM、处理匹配分析）
+
+  llm:
+    location: src/llm/
+    purpose: DashScope 接口封装与 prompt 管理，统一调用方式和响应结构
+
+  models:
+    location: src/models/
+    purpose: 定义 Pydantic 数据结构（UserProfile, JDInput, MatchResult 等）
+    best-practices:
+      - 每个模型独立文件或逻辑组归类
+      - 输入/输出模型明确区分（Schema / Response）
+
+  config:
+    file: src/config.py
+    notes: 环境变量管理、DashScope Key 读取、运行配置集中定义
+
+  tests:
+    location: tests/
+    purpose: Pytest 单元测试与集成测试
+    structure:
+      - test_routers/
+      - test_services/
+      - fixtures/
+
+  optional-integrations:
+    langgraph:
+      enabled: true
+      purpose: 用于构建复杂 LLM 工作流（如多轮匹配分析、模拟面试流程）
+      location:
+        - graphs: src/graphs/
+        - agents: src/agents/
+      usage-style:
+        - 每个节点为独立函数，明确输入输出
+        - 状态结构使用 Pydantic 管理
+      notes:
+        - LangGraph 仅用于特定流程，非后端主干依赖
+        - 可通过 FastAPI 路由封装触发
+
+project-specific-modules:
+
+- resume.py
+    purpose: 接收简历文本，调用 DashScope 抽取结构化信息
+- match.py
+    purpose: 接收简历 + JD，分析匹配度与缺口，生成建议
+- session.py (可选)
+    purpose: 管理 JobApplicationSession 数据模型与多轮操作状态
+
+best-practices:
+
+- 所有 LLM 请求封装为 `call_llm(prompt: str) -> dict` 接口
+- prompt 模板统一放置在 src/llm/prompts/ 中，使用字符串模板或 Jinja2 渲染
+- 每个 API 路由都应对应一个 service 层调用，保持 controller/service 分离
+- 使用 logging 模块进行结构化日志记录
+- API 响应使用统一格式（如：`{"success": true, "data": {...}}`）
+- 保留 mock 模式，用于本地开发与前端联调
+- 出错时返回 HTTPException（422/500），并带上 reason message
+
+external-dependencies:
+
+- fastapi
+- uvicorn
+- httpx
+- dashscope
+- pydantic
+- python-dotenv
+- pytest
+- pytest-cov
+- (optional) langgraph
+
+devscripts:
+  run: uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+  test: pytest -v
+  lint: ruff check src/
+  format: ruff format src/
+
+deployment:
+  platform: Fly.io
+  dockerfile: Dockerfile
+  env: .env / secrets via Fly.io
+  healthcheck: GET /healthz
+
+notes:
+
+- 所有 API Key 读取应通过 config 模块，不直接硬编码
+- 所有输入输出结构应与前端保持一致，必要时通过 JSON Schema 辅助验证
+- LangGraph 可以用于多轮任务流程，但不是默认路径，建议逐步引入
