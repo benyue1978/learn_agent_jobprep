@@ -34,6 +34,11 @@
 
 `VERCEL_TOKEN` 在 Vercel Account Settings 中创建访问令牌
 
+**注意**: 这里可能有个小问题，`vercel link` 命令会设置项目的 Root Directory 为
+`apps/frontend`，同时 GitHub Actions 的 `working-directory` 是 `apps/frontend`。
+这可能会导致执行 Deploy 的时候，找不到项目根目录。需要到 Vercel 项目配置里把
+Root Directory 改为空。
+
 ## 🔧 配置 Render.com (Dashboard 部署)
 
 1. 登录 [Render.com Dashboard](https://dashboard.render.com)
@@ -72,15 +77,15 @@
 
 ## 🧪 测试部署
 
-### 前端测试
-
-- 访问 Vercel 部署的 URL
-- 检查 `/demo` 页面是否能正常显示
-
 ### 后端测试
 
 - 访问 `https://your-backend.onrender.com/healthz`
 - 应该返回健康检查状态
+
+### 前端测试
+
+- 访问 Vercel 部署的 URL
+- 检查 `/demo` 页面是否能正常显示
 
 ## 📝 注意事项
 
@@ -90,8 +95,8 @@
 2. **CORS**: 后端需要配置 CORS 以允许前端访问
 3. **健康检查**: 后端提供 `/healthz` 端点用于部署监控
 4. **自动部署**:
-   - 前端通过 GitHub Actions 自动部署到 Vercel
    - 后端通过 Render.com Dashboard 自动部署
+   - 前端通过 GitHub Actions 自动部署到 Vercel
 5. **目录结构**: Render.com 服务需要指向 `apps/backend` 目录
 
 ## 🔍 故障排除
@@ -104,15 +109,15 @@
 2. 确保 URL 格式正确 (包含 `https://`)
 3. 确保后端服务已成功部署并可访问
 
-### 前端部署失败
-
-1. 检查 GitHub Actions 日志
-2. 验证所有必需的 Vercel secrets 都已配置
-3. 确保前端代码中没有语法错误
-
 ### 后端部署失败
 
 1. 检查 Render.com Dashboard 中的构建日志
 2. 验证环境变量是否正确配置
 3. 确保后端代码中没有语法错误
 4. 检查 `apps/backend` 目录结构是否正确
+
+### 前端部署失败
+
+1. 检查 GitHub Actions 日志
+2. 验证所有必需的 Vercel secrets 都已配置
+3. 确保前端代码中没有语法错误

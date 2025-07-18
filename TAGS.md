@@ -102,12 +102,51 @@
 
 ---
 
+### 🏷️ step3_deployment
+
+**提交**: `dda535e9d0126c053a686ae0b434b3b200b1d8e4`
+**日期**: 2025-07-18 14:20:21+08:00
+**描述**: 部署配置和文档完善
+
+#### 部署功能
+
+- ✅ 后端部署配置 (Render.com)
+  - Render.com Dashboard 部署
+  - 环境变量配置
+  - 健康检查端点
+  - 自动部署触发
+- ✅ 前端部署配置 (Vercel)
+  - GitHub Actions 自动部署工作流
+  - Vercel 项目配置和集成
+  - 环境变量管理 (GitHub Secrets)
+  - 构建优化和错误处理
+- ✅ 部署文档完善
+  - 详细的部署指南 (`DEPLOYMENT.md`)
+  - 故障排除说明
+  - 配置步骤详解
+  - 前后端连接说明
+- ✅ 架构更新
+  - 从 Fly.io 迁移到 Render.com
+  - 更新所有相关文档
+  - 修改 Cursor IDE 规则
+  - 完善项目配置
+
+#### 部署特性
+
+- **后端部署**: Render.com Dashboard, 环境变量管理
+- **前端部署**: GitHub Actions, Vercel, 自动构建
+- **文档**: 完整的部署指南, 故障排除, 最佳实践
+- **集成**: 前后端自动部署, 环境变量同步
+
+---
+
 ## 版本演进
 
 ```mermaid
 graph LR
     A[step0_docs_only] --> B[step1_blank_project]
     B --> C[step2_demo_api]
+    C --> D[step3_deployment]
 
     A --> A1[项目规范]
     A --> A2[架构设计]
@@ -120,6 +159,10 @@ graph LR
     C --> C1[API 实现]
     C --> C2[前端集成]
     C --> C3[测试验证]
+
+    D --> D1[后端部署]
+    D --> D2[前端部署]
+    D --> D3[文档完善]
 ```
 
 ## 使用指南
@@ -149,12 +192,12 @@ git show step2_demo_api
 
 ## 下一步计划
 
-基于当前 `step2_demo_api` 版本，后续可以继续开发：
+基于当前 `step3_deployment` 版本，后续可以继续开发：
 
 1. **简历解析功能** - 集成 DashScope LLM
 2. **JD 匹配分析** - 智能匹配算法
 3. **用户界面优化** - 更丰富的 UI 组件
 4. **数据持久化** - 数据库集成
-5. **部署配置** - 生产环境部署
+5. **生产环境优化** - 性能监控和日志
 
 每个新功能都可以创建新的 tag 来标记重要的开发里程碑。
