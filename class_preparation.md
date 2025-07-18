@@ -10,7 +10,7 @@
 
 - [DashScope 控制台（获取 API Key）](https://bailian.console.aliyun.com/model-market)
 - [Vercel 平台（部署前端）](https://vercel.com)
-- [Fly.io 平台（部署后端）](https://fly.io)
+- [Render.com 平台（部署后端）](https://render.com)
 - [GitHub（用于代码托管和 CI/CD）](https://github.com)
 
 如果你已经有 GitHub 和 Vercel 账号，可直接跳过账号注册步骤。
@@ -26,7 +26,6 @@
 | Node.js  | ≥ 18.x   | 前端开发（Next.js） |
 | Python   | 3.11.5   | 后端开发（FastAPI） |
 | pnpm     | ≥ 8.x    | 包管理工具（支持 monorepo） |
-| Docker   | 最新版    | 后端部署、测试 |
 | Git      | 最新版    | 版本控制 |
 
 ---
@@ -47,30 +46,12 @@ pnpm -v
 
 ---
 
-### Docker 安装方法
-
-请根据你的操作系统选择对应的安装方式：
-
-- **macOS/Windows 用户**：  
-  推荐直接下载安装 [Docker Desktop](https://www.docker.com/products/docker-desktop/)。
-- **Linux 用户**：  
-  可参考官方文档：[Docker Engine 安装指南](https://docs.docker.com/engine/install/)。
-
-安装完成后可用以下命令验证：
-
-```bash
-docker --version
-```
-
----
-
 建议使用以下命令快速检查：
 
 ```bash
 node -v
 python3 --version
 pnpm -v
-docker --version
 git --version
 ```
 
@@ -131,9 +112,9 @@ pnpm install
 
 | 项目 | 状态 |
 |-------------------------------|:---:|
-| GitHub / Vercel / Fly.io 账号已注册 | ☐ |
+| GitHub / Vercel / Render.com 账号已注册 | ☐ |
 | DashScope API Key 已申请并保存      | ☐ |
-| 本地已安装 Node.js / Python / pnpm / Docker | ☐ |
+| 本地已安装 Node.js / Python / pnpm | ☐ |
 | 成功打开过项目 starter 或模板仓库   | ☐ |
 | Cursor IDE 或 VS Code 已安装并配置  | ☐ |
 | 个人简历已准备（txt/md 格式）         | ☐ |

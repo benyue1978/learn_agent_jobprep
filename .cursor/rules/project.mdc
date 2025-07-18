@@ -39,7 +39,7 @@ alwaysApply: false
 | LLM 接入     | dashscope-sdk            | 通义 DashScope LLM/Embedding                 |
 | 存储         | SQLite                   | 轻量级本地数据库                             |
 | 包管理       | requirements.txt + venv  | 依赖与虚拟环境                               |
-| 部署         | Fly.io                   | 全球边缘部署，支持持久化存储                 |
+| 部署         | Render.com               | 云端部署，支持自动扩展和持久化存储           |
 
 ---
 
@@ -59,9 +59,8 @@ alwaysApply: false
 |--------------|--------------------------|----------------------------------------------|
 | 包管理       | pnpm workspaces          | 前后端及共享包统一管理                      |
 | 版本控制     | Git + GitHub             | 代码托管与协作                              |
-| CI/CD        | Vercel/Fly.io + GitHub Actions | 自动化部署与测试                        |
+| CI/CD        | Vercel/Render.com + GitHub Actions | 自动化部署与测试                    |
 | 开发辅助     | Cursor IDE               | AI 编程、代码理解与重构                     |
-| 容器化       | Docker                   | 本地与云端一致性环境                        |
 
 ---
 
@@ -88,5 +87,5 @@ alwaysApply: false
 - 所有 LLM 相关调用统一走 DashScope
 - 环境变量集中管理，前后端严格区分
 - 推荐使用 pnpm monorepo 管理多包
-- 前端部署 Vercel，后端部署 Fly.io
+- 前端部署 Vercel，后端部署 Render.com
 - 支持持久化存储与云端日志监控

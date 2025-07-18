@@ -28,11 +28,10 @@ frontend:
 
 backend:
   framework: fastapi
-  platform: fly.io
+  platform: render.com
   directory: apps/backend
   deployment:
-    method: docker
-    dockerfile: Dockerfile
+    method: render.com dashboard
     entrypoint: src/main.py
     build-args: []
     healthcheck:
@@ -41,13 +40,13 @@ backend:
     env-vars:
       - DASHSCOPE_API_KEY
       - APP_ENV=production
-  remote-build: true
+  auto-deploy: true
   scaling:
     strategy: auto
-    regions: global (primary: iad)
+    regions: global
   secrets:
-    managed-by: fly secrets CLI
-    command: fly secrets set DASHSCOPE_API_KEY=sk-xxx
+    managed-by: render dashboard
+    command: 通过 Render Dashboard 设置环境变量
 
 ci-cd:
   provider: github-actions
@@ -62,10 +61,9 @@ ci-cd:
       trigger: push to main or backend/**
       jobs:
         - test (pytest)
-        - build docker image
-        - deploy to fly.io
+        - deploy to render.com
   env-injection:
-    strategy: encrypted secrets (GitHub → Vercel / Fly)
+    strategy: encrypted secrets (GitHub → Vercel / Render)
 
 infra:
   observability: pending
@@ -78,11 +76,11 @@ testing:
     frontend: /demo 页面可展示 mock 数据
   deploy-test:
     - GitHub Actions 中触发部署
-    - Fly.io deploy 成功日志出现 `"App is now running"`
+    - Render.com deploy 成功日志出现 `"App is now running"`
     - Vercel Preview URL 可访问首页并展示结构化字段
 
 notes:
 
 - 所有部署均以 main 分支为准，可支持 preview（dev）环境并行测试
-- 建议在 Fly.io 上使用 remote builder，避免本地 ARM 架构构建问题
+- 建议在 Render.com 上使用自动构建，避免本地架构构建问题
 - 使用 dotenv 和 secrets CLI 管理关键凭据，避免硬编码 API Key

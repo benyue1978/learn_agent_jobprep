@@ -25,8 +25,7 @@ jobprep/
 - [ ] 编写测试（pytest）：
 - [ ] 基本接口返回测试
 - [ ] CI 环境下测试运行
-- [ ] 配置 Fly.io 部署
-- [ ] `Dockerfile`、`fly.toml`、健康检查
+- [ ] 配置 Render.com 部署
 - [ ] `.github/workflows/backend.yml`：推送触发部署
 - [ ] 支持 secrets 注入（如 API 密钥）
 
@@ -123,7 +122,7 @@ jobprep/
 - [ ] 添加日志系统（结构化日志 + 调用追踪）
 - [ ] 项目 README + 部署说明文档
 - [ ] 录制演示视频或 gif
-- [ ] 添加演示链接（Vercel/Fly.io Preview）
+- [ ] 添加演示链接（Vercel/Render.com Preview）
 
 ---
 
@@ -136,6 +135,6 @@ jobprep/
 | 前端 | Next.js + Tailwind CSS + shadcn/ui |
 | 状态管理 | React Context / 内建 Hook |
 | 数据库（后期） | SQLite（优先轻量方案） |
-| 部署 | 前端 Vercel / 后端 Fly.io |
+| 部署 | 前端 Vercel / 后端 Render.com |
 | 测试 | pytest（后端） / Vitest / Playwright（前端） |
 | CI/CD | GitHub Actions（前后端分流） |

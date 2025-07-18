@@ -100,9 +100,8 @@ devscripts:
   format: ruff format src/
 
 deployment:
-  platform: Fly.io
-  dockerfile: Dockerfile
-  env: .env / secrets via Fly.io
+  platform: Render.com
+  env: .env / secrets via Render Dashboard
   healthcheck: GET /healthz
 
 notes:
