@@ -39,6 +39,8 @@
 这可能会导致执行 Deploy 的时候，找不到项目根目录。需要到 Vercel 项目配置里把
 Root Directory 改为空。
 
+**注意**: 在 Vercel 项目配置里，需要增加环境变量 `NEXT_PUBLIC_API_URL`，值为后端 API 地址 (例如: `https://your-backend.onrender.com`)
+
 ## 🔧 配置 Render.com (Dashboard 部署)
 
 1. 登录 [Render.com Dashboard](https://dashboard.render.com)

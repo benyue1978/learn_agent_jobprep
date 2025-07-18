@@ -31,8 +31,6 @@ jobs:
 
       - name: Build Frontend
         run: pnpm -C apps/frontend build
-        env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
@@ -43,4 +41,3 @@ jobs:
           working-directory: ./apps/frontend
           vercel-args: >
             --prod
-            -m NEXT_PUBLIC_API_URL=${{ secrets.API_URL }}
