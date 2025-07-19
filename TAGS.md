@@ -140,6 +140,78 @@
 
 ---
 
+### 🏷️ step4_langgraph_resume_parsing
+
+**提交**: `4f891f47946a346bf72f272b2cd257a48a5ebbbb`
+**日期**: 2025-07-19 11:58:57+08:00
+**描述**: LangGraph 驱动的简历解析功能实现
+
+#### 核心功能
+
+- ✅ LangGraph 工作流实现
+  - 简历解析节点 (`parse_resume`)
+  - 简历验证节点 (`validate_resume`)
+  - 建议生成节点 (`generate_suggestions`)
+  - 建议验证节点 (`validate_suggestions`)
+  - 结果合并节点 (`combine_result`)
+  - 错误处理节点和条件边
+- ✅ 数据模型设计 (Pydantic V2)
+  - 简历数据结构 (`Resume`)
+  - 优化建议模型 (`Suggestion`)
+  - 聊天消息模型 (`ChatMessage`)
+  - LangGraph 状态模型 (`LangGraphState`)
+  - 字段验证和类型安全
+- ✅ Mock LLM 客户端
+  - 模拟 DashScope/OpenAI API 响应
+  - 简历解析接口 (`parse_resume`)
+  - 建议生成接口 (`generate_suggestions`)
+  - 聊天接口 (`chat`)
+- ✅ API 端点实现
+  - `/parse_resume` - 简历解析主接口
+  - `/resume` - 获取当前简历
+  - `/resume/accept-suggestion` - 接受优化建议
+  - `/chat` - 简历相关聊天
+  - 内存存储和会话管理
+- ✅ 服务层实现
+  - 简历服务 (`ResumeService`)
+  - 聊天服务 (`ChatService`)
+  - 字段路径解析和更新
+  - 建议接受逻辑
+- ✅ 完整测试覆盖
+  - 字段解析单元测试
+  - 服务层逻辑测试
+  - LangGraph 工作流测试
+  - API 集成测试
+  - 47个测试用例全部通过
+
+#### 技术特性
+
+- **LangGraph**: 状态管理工作流, 条件边控制, 错误处理
+- **FastAPI**: RESTful API, 自动文档生成, 类型验证
+- **Pydantic V2**: 数据验证, 类型安全, 模型序列化
+- **测试**: 分层测试策略, 单元测试到集成测试
+- **架构**: 清晰的分层架构, 职责分离, 可扩展设计
+
+#### 工作流程
+
+```mermaid
+graph TD
+    A[用户输入简历文本] --> B[parse_resume]
+    B --> C[validate_resume]
+    C --> D{验证通过?}
+    D -->|是| E[generate_suggestions]
+    D -->|否| F[resume_validation_error]
+    E --> G[validate_suggestions]
+    G --> H{建议验证通过?}
+    H -->|是| I[combine_result]
+    H -->|否| J[suggestion_validation_error]
+    I --> K[返回结构化结果]
+    F --> L[返回错误信息]
+    J --> L
+```
+
+---
+
 ## 版本演进
 
 ```mermaid
@@ -147,6 +219,7 @@ graph LR
     A[step0_docs_only] --> B[step1_blank_project]
     B --> C[step2_demo_api]
     C --> D[step3_deployment]
+    D --> E[step4_langgraph_resume_parsing]
 
     A --> A1[项目规范]
     A --> A2[架构设计]
@@ -163,6 +236,11 @@ graph LR
     D --> D1[后端部署]
     D --> D2[前端部署]
     D --> D3[文档完善]
+
+    E --> E1[LangGraph 工作流]
+    E --> E2[简历解析]
+    E --> E3[AI 建议生成]
+    E --> E4[完整测试覆盖]
 ```
 
 ## 使用指南
@@ -174,30 +252,30 @@ graph LR
 git tag -l
 
 # 检出特定版本
-git checkout step2_demo_api
+git checkout step4_langgraph_resume_parsing
 
 # 创建新分支基于特定 tag
-git checkout -b feature/new-feature step2_demo_api
+git checkout -b feature/new-feature step4_langgraph_resume_parsing
 ```
 
 ### 版本对比
 
 ```bash
 # 比较两个版本
-git diff step1_blank_project..step2_demo_api
+git diff step3_deployment..step4_langgraph_resume_parsing
 
 # 查看特定版本的变更
-git show step2_demo_api
+git show step4_langgraph_resume_parsing
 ```
 
 ## 下一步计划
 
-基于当前 `step3_deployment` 版本，后续可以继续开发：
+基于当前 `step4_langgraph_resume_parsing` 版本，后续可以继续开发：
 
-1. **简历解析功能** - 集成 DashScope LLM
-2. **JD 匹配分析** - 智能匹配算法
-3. **用户界面优化** - 更丰富的 UI 组件
-4. **数据持久化** - 数据库集成
-5. **生产环境优化** - 性能监控和日志
+1. **真实 LLM 集成** - 替换 Mock 客户端为真实的 DashScope/OpenAI API
+2. **JD 匹配分析** - 智能匹配算法和评分系统
+3. **用户界面优化** - 简历编辑器和可视化组件
+4. **数据持久化** - 数据库集成和用户管理
+5. **生产环境优化** - 性能监控、日志和错误处理
 
 每个新功能都可以创建新的 tag 来标记重要的开发里程碑。
