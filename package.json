@@ -14,8 +14,8 @@
     "test": "pnpm --filter frontend test",
     "lint": "pnpm -r lint",
     "format": "pnpm -r format",
-    "backend": "cd apps/backend && uvicorn src.main:app --reload",
-    "backend:test": "cd apps/backend && python -m pytest tests/ -v"
+    "backend": "cd apps/backend && source ../../venv/bin/activate && uvicorn src.main:app --reload",
+    "backend:test": "cd apps/backend && source ../../venv/bin/activate && python -m pytest tests/ -v"
   },
   "workspaces": [
     "apps/frontend",

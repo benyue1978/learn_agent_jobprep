@@ -5,3 +5,7 @@ httpx
 python-dotenv
 pytest
 pytest-asyncio
+dashscope
+langgraph
+langchain
+langchain-core

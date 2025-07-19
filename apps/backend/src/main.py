@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import APP_ENV, PORT
 
+# Import routers
+from src.routers import resume, chat
+
 # Create FastAPI app instance
 app = FastAPI(
     title="JobPrep Backend API",
@@ -19,6 +22,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(resume.router)
+app.include_router(chat.router)
 
 @app.get("/test")
 async def test_endpoint():
