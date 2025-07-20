@@ -22,7 +22,8 @@ graph TD
 ### 核心组件
 
 1. **LangGraph 工作流** (`src/langgraph/workflow.py`)
-   - 5个核心节点：parse_resume, validate_resume, generate_suggestions, validate_suggestions, combine_result
+   - 5个核心节点：parse_resume, validate_resume, generate_suggestions,
+     validate_suggestions, combine_result
    - 2个错误处理节点：handle_resume_error, handle_suggestion_error
    - 完整的状态管理和条件分支
 
@@ -76,6 +77,7 @@ Content-Type: application/json
 ```
 
 **响应示例：**
+
 ```json
 {
   "resume": {
@@ -146,7 +148,9 @@ Content-Type: application/json
    - `test_api_integration.py` - API 端点集成 (12个测试)
    - `test_main.py` - 主应用功能 (2个测试)
 
-**总计：47个测试用例，100%通过率**
+### 测试统计
+
+总计：47个测试用例，100%通过率
 
 ### 测试运行
 
@@ -170,7 +174,7 @@ python -m pytest tests/test_api_integration.py -v
 
 ## 📁 项目结构
 
-```
+```text
 apps/backend/
 ├── src/
 │   ├── langgraph/
@@ -203,21 +207,25 @@ apps/backend/
 ## 🎯 核心特性
 
 ### 1. 结构化工作流
+
 - 每个步骤职责明确，便于调试和维护
 - 错误隔离，不同阶段的错误有独立的处理逻辑
 - 完整的状态追踪
 
 ### 2. 严格验证
+
 - 简历结构完整性验证
 - 建议引用有效性验证
 - Pydantic V2 模型验证
 
 ### 3. 错误处理
+
 - 详细的错误信息
 - 优雅的错误恢复
 - 用户友好的错误提示
 
 ### 4. 可扩展性
+
 - 模块化设计
 - 易于添加新的验证规则
 - 支持不同的 LLM 提供商
