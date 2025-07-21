@@ -64,8 +64,8 @@ export default function ChatWindow({ isOpen, onSuggestionAccept, referencedConte
     }
   };
 
-  const handleSuggestionAccept = (suggestion: Suggestion) => {
-    onSuggestionAccept(suggestion.field, suggestion.suggested);
+  const handleSuggestionAccept = async (suggestion: Suggestion) => {
+    await onSuggestionAccept(suggestion.field, suggestion.suggested);
   };
 
   if (!isOpen) return null;

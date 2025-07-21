@@ -5,7 +5,7 @@ import SuggestionCard from '../resume/suggestions/SuggestionCard';
 
 interface MessageBubbleProps {
   message: ChatMessage;
-  onSuggestionAccept: (suggestion: Suggestion) => void;
+  onSuggestionAccept: (suggestion: Suggestion) => Promise<void>;
 }
 
 export default function MessageBubble({ message, onSuggestionAccept }: MessageBubbleProps) {
@@ -37,7 +37,9 @@ export default function MessageBubble({ message, onSuggestionAccept }: MessageBu
           <div className="mt-3">
             <SuggestionCard
               suggestion={message.suggestion}
-              onAccept={() => onSuggestionAccept(message.suggestion!)}
+              onAccept={async () => {
+                await onSuggestionAccept(message.suggestion!);
+              }}
               onReject={() => {
                 // Handle reject locally - just hide the suggestion
                 console.log('Suggestion rejected:', message.suggestion);
