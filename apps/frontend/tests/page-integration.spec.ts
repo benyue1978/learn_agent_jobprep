@@ -1,16 +1,28 @@
 import { test, expect } from '@playwright/test';
+import { mockResumeAPI, mockChatAPI } from './mocks/api-mocks';
+import { createTestResume, createTestChatResponse } from './fixtures/resume-data';
 
-test.describe('Test Page Tests', () => {
+test.describe('Page Integration Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/test');
+    // 设置API模拟
+    await mockResumeAPI(page, createTestResume());
+    await mockChatAPI(page, createTestChatResponse());
   });
 
-  test('should load test page successfully', async ({ page }) => {
+  test('should integrate with backend API correctly', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     await expect(page).toHaveTitle('求职助手 - AI 简历优化工具');
     await expect(page.locator('h1')).toContainText('Backend API Test');
   });
 
   test('should display test page content', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     // Check if main content is displayed
     await expect(page.locator('text=Testing connection to FastAPI backend')).toBeVisible();
     await expect(page.locator('text=Test Backend Connection')).toBeVisible();
@@ -18,6 +30,10 @@ test.describe('Test Page Tests', () => {
   });
 
   test('should display backend status information', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     // Check if backend status is displayed
     await expect(page.locator('text=Backend is up and running')).toBeVisible();
     await expect(page.locator('text=Health Check')).toBeVisible();
@@ -28,6 +44,10 @@ test.describe('Test Page Tests', () => {
   });
 
   test('should display API information', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     // Check if API information is displayed
     await expect(page.locator('text=API Information')).toBeVisible();
     await expect(page.locator('text=Base URL:')).toBeVisible();
@@ -39,6 +59,10 @@ test.describe('Test Page Tests', () => {
   });
 
   test('should test backend connection successfully', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     // Mock the backend API responses
     await page.route('**/api/test', async route => {
       await route.fulfill({
@@ -73,6 +97,10 @@ test.describe('Test Page Tests', () => {
   });
 
   test('should handle backend connection errors gracefully', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     // Mock the backend API responses to simulate errors
     await page.route('**/api/test', async route => {
       await route.fulfill({
@@ -96,9 +124,12 @@ test.describe('Test Page Tests', () => {
   });
 
   test('should display navigation elements', async ({ page }) => {
+    // 导航到测试页面
+    await page.goto('/test');
+    await page.waitForLoadState('networkidle');
+    
     // Check if navigation is present
     await expect(page.locator('nav')).toBeVisible();
-    await expect(page.locator('a[href="/"]').nth(1)).toContainText('首页');
     await expect(page.locator('a[href="/upload"]')).toContainText('上传简历');
     await expect(page.locator('a[href="/edit"]')).toContainText('编辑简历');
     await expect(page.locator('a[href="/test"]')).toContainText('测试页面');

@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { mockResumeAPI, mockChatAPI } from './mocks/api-mocks';
+import { createTestResume, createTestChatResponse } from './fixtures/resume-data';
 
-test.describe('Chat Debug Tests', () => {
-  test('should debug API call flow', async ({ page }) => {
+test.describe('Chat Debug Functionality Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // 设置API模拟
+    await mockResumeAPI(page, createTestResume());
+    await mockChatAPI(page, createTestChatResponse());
+  });
+
+  test('should display debug information correctly', async ({ page }) => {
     // 监听所有网络请求
     const requests: string[] = [];
     page.on('request', request => {

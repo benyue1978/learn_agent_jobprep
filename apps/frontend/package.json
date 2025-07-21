@@ -7,17 +7,28 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    
     "test": "playwright test",
-    "test:unit": "playwright test tests/chat-functionality.spec.ts",
-    "test:integration": "playwright test tests/chat-integration.spec.ts",
-    "test:e2e": "playwright test tests/chat-e2e.spec.ts",
-    "test:api": "playwright test tests/api-integration.spec.ts",
-    "test:boundary": "playwright test tests/chat-boundary.spec.ts",
-    "test:format": "playwright test tests/chat-format-test.spec.ts",
     "test:all": "playwright test",
+    
+    "test:unit": "playwright test --project=unit",
+    "test:integration": "playwright test --project=integration",
+    "test:e2e-mock": "playwright test --project=e2e-mock",
+    "test:e2e-real": "playwright test --project=e2e-real",
+    
+    "test:mock": "playwright test --project=unit --project=integration --project=e2e-mock",
+    "test:real-backend": "playwright test --project=e2e-real",
+    
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    
+    "test:chat-functionality": "playwright test tests/chat-functionality.spec.ts",
+    "test:chat-integration": "playwright test tests/chat-integration.spec.ts",
+    "test:chat-e2e": "playwright test tests/chat-e2e.spec.ts",
+    "test:api-integration": "playwright test tests/api-integration.spec.ts",
+    "test:chat-boundary": "playwright test tests/chat-boundary.spec.ts",
+    "test:chat-format": "playwright test tests/chat-format-test.spec.ts"
   },
   "dependencies": {
     "@shadcn/ui": "^0.0.4",

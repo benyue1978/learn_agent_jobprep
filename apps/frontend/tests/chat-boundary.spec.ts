@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { mockResumeAPI, mockChatAPI } from './mocks/api-mocks';
+import { createTestResume, createTestChatResponse } from './fixtures/resume-data';
 
 test.describe('Chat Boundary Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // 设置API模拟
+    await mockResumeAPI(page, createTestResume());
+    await mockChatAPI(page, createTestChatResponse());
+  });
+
   test('should handle extremely long messages', async ({ page }) => {
     let frontendRequest: any = null;
 

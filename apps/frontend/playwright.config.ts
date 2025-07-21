@@ -24,41 +24,65 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects for different test environments */
   projects: [
+    // 单元测试 - 完全Mock，快速执行
+    {
+      name: 'unit',
+      testMatch: /.*-unit\.spec\.ts|.*-boundary\.spec\.ts|.*-format.*\.spec\.ts/,
+      use: { 
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:3000',
+      },
+    },
+
+    // 集成测试 - Mock API响应
+    {
+      name: 'integration',
+      testMatch: /.*-integration\.spec\.ts/,
+      use: { 
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:3000',
+      },
+    },
+
+    // E2E测试 - Mock后端API
+    {
+      name: 'e2e-mock',
+      testMatch: /.*-e2e\.spec\.ts/,
+      use: { 
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:3000',
+      },
+    },
+
+    // E2E测试 - 真实后端API（可选）
+    {
+      name: 'e2e-real',
+      testMatch: /.*-e2e\.spec\.ts/,
+      grep: /@real-backend/,
+      use: { 
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://localhost:3000',
+      },
+      // 只在特定条件下运行
+      retries: 1,
+    },
+
+    // 默认项目 - 所有测试
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
 
+    // 其他浏览器测试（可选）
     // {
     //   name: 'firefox',
     //   use: { ...devices['Desktop Firefox'] },
     // },
-
     // {
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
 

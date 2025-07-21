@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { mockResumeAPI, mockChatAPI } from './mocks/api-mocks';
+import { createTestResume, createTestChatResponse } from './fixtures/resume-data';
 
 test.describe('Chat E2E Tests', () => {
-  test('should complete full chat workflow', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
+    // 设置API模拟
+    await mockResumeAPI(page, createTestResume());
+    await mockChatAPI(page, createTestChatResponse());
+  });
+
+  test('should complete full chat workflow @real-backend', async ({ page }) => {
     let frontendRequests: any[] = [];
 
     await page.route('**/api/chat', async (route) => {
@@ -75,7 +83,7 @@ test.describe('Chat E2E Tests', () => {
     expect(frontendRequests[1].message).toBe('请帮我分析简历');
   });
 
-  test('should handle chat with referenced content', async ({ page }) => {
+  test('should handle chat with referenced content @real-backend', async ({ page }) => {
     let frontendRequests: any[] = [];
 
     await page.route('**/api/chat', async (route) => {

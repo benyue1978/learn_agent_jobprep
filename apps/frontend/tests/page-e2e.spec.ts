@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { mockResumeAPI, mockChatAPI } from './mocks/api-mocks';
+import { createTestResume, createTestChatResponse } from './fixtures/resume-data';
 
-test.describe('Edit Page Tests', () => {
-  test('should load edit page with resume data', async ({ page }) => {
+test.describe('Page E2E Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // 设置API模拟
+    await mockResumeAPI(page, createTestResume());
+    await mockChatAPI(page, createTestChatResponse());
+  });
+
+  test('should complete full page workflow @real-backend', async ({ page }) => {
     // Mock the API response to simulate existing resume
     await page.route('**/api/resume', async route => {
       await route.fulfill({

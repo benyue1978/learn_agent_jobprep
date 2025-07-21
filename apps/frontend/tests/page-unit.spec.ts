@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { mockResumeAPI, mockChatAPI } from './mocks/api-mocks';
+import { createTestResume, createTestChatResponse } from './fixtures/resume-data';
 
-test.describe('Home Page Tests', () => {
-  test('should load home page successfully', async ({ page }) => {
+test.describe('Home Page Functionality Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    // 设置API模拟
+    await mockResumeAPI(page, createTestResume());
+    await mockChatAPI(page, createTestChatResponse());
+  });
+
+  test('should display home page correctly', async ({ page }) => {
     await page.goto('/');
     
     // Check if page title is correct
