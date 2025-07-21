@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, Resume } from '@/lib/api';
+import { api, Resume, Suggestion } from '@/lib/api';
 import BasicInfoSection from '@/components/resume/sections/BasicInfoSection';
 import EducationSection from '@/components/resume/sections/EducationSection';
 import ExperienceSection from '@/components/resume/sections/ExperienceSection';

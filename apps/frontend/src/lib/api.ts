@@ -6,7 +6,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 // Create axios instance for backend API
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 120000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -71,6 +71,11 @@ export interface Resume {
     description?: string;
     suggestions?: Suggestion[];
   }>;
+}
+
+export interface GetResumeResponse {
+  resume: Resume | null;
+  suggestions: Suggestion[];
 }
 
 export interface Suggestion {
@@ -141,8 +146,8 @@ export const api = {
   // Get current resume
   getResume: async (): Promise<Resume | null> => {
     try {
-      const response = await apiClient.get<{resume: Resume}>('/api/resume');
-      return response.data.resume;
+      const response = await apiClient.get<Resume>('/api/resume');
+      return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         return null;

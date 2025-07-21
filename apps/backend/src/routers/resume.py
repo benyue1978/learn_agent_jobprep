@@ -22,7 +22,9 @@ async def parse_resume(request: ParseResumeRequest):
     try:
         # Use LangGraph workflow to parse resume
         result = await resume_service.parse_resume(request.text)
+        # Store both resume and suggestions
         resume_storage["current"] = result.resume
+        resume_storage["suggestions"] = result.suggestions
         return result
     except ValueError as e:
         # Handle validation errors from LangGraph workflow
@@ -35,12 +37,66 @@ async def parse_resume(request: ParseResumeRequest):
 @router.get("/resume")
 async def get_resume():
     """
-    Get the currently stored resume
+    Get the currently stored resume with suggestions embedded
     """
     if "current" not in resume_storage:
         raise HTTPException(status_code=404, detail="No resume found")
     
-    return {"resume": resume_storage["current"]}
+    resume = resume_storage["current"]
+    suggestions = resume_storage.get("suggestions", [])
+    
+    # Create a copy of the resume to embed suggestions
+    resume_dict = resume.model_dump()
+    
+    # Embed suggestions into the appropriate objects based on field paths
+    for suggestion in suggestions:
+        field_path = suggestion.field
+        if field_path.startswith("basics."):
+            if "suggestions" not in resume_dict["basics"] or resume_dict["basics"]["suggestions"] is None:
+                resume_dict["basics"]["suggestions"] = []
+            resume_dict["basics"]["suggestions"].append(suggestion.model_dump())
+        elif field_path.startswith("education["):
+            # Parse education index from field path like "education[0].gpa"
+            import re
+            match = re.match(r"education\[(\d+)\]", field_path)
+            if match:
+                index = int(match.group(1))
+                if index < len(resume_dict["education"]):
+                    if "suggestions" not in resume_dict["education"][index] or resume_dict["education"][index]["suggestions"] is None:
+                        resume_dict["education"][index]["suggestions"] = []
+                    resume_dict["education"][index]["suggestions"].append(suggestion.model_dump())
+        elif field_path.startswith("work["):
+            # Parse work index from field path like "work[0].description"
+            import re
+            match = re.match(r"work\[(\d+)\]", field_path)
+            if match:
+                index = int(match.group(1))
+                if index < len(resume_dict["work"]):
+                    if "suggestions" not in resume_dict["work"][index] or resume_dict["work"][index]["suggestions"] is None:
+                        resume_dict["work"][index]["suggestions"] = []
+                    resume_dict["work"][index]["suggestions"].append(suggestion.model_dump())
+        elif field_path.startswith("skills["):
+            # Parse skills index from field path like "skills[0].level"
+            import re
+            match = re.match(r"skills\[(\d+)\]", field_path)
+            if match:
+                index = int(match.group(1))
+                if index < len(resume_dict["skills"]):
+                    if "suggestions" not in resume_dict["skills"][index] or resume_dict["skills"][index]["suggestions"] is None:
+                        resume_dict["skills"][index]["suggestions"] = []
+                    resume_dict["skills"][index]["suggestions"].append(suggestion.model_dump())
+        elif field_path.startswith("certificates["):
+            # Parse certificates index from field path like "certificates[0].description"
+            import re
+            match = re.match(r"certificates\[(\d+)\]", field_path)
+            if match:
+                index = int(match.group(1))
+                if index < len(resume_dict["certificates"]):
+                    if "suggestions" not in resume_dict["certificates"][index] or resume_dict["certificates"][index]["suggestions"] is None:
+                        resume_dict["certificates"][index]["suggestions"] = []
+                    resume_dict["certificates"][index]["suggestions"].append(suggestion.model_dump())
+    
+    return resume_dict
 
 
 @router.post("/resume", response_model=SaveResumeResponse)

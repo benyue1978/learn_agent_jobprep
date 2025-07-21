@@ -1,16 +1,76 @@
 import json
-from typing import Dict, Any
+import os
+from typing import Dict, Any, List
+import logging
 
-from src.llm.prompts import RESUME_PARSE_PROMPT, CHAT_PROMPT
+from openai import OpenAI
+from src.config import DASHSCOPE_API_KEY
+from src.llm.prompts import RESUME_PARSE_PROMPT, CHAT_PROMPT, build_parse_resume_messages
 
+logger = logging.getLogger(__name__)
 
 class LLMClient:
     """LLM client for interacting with language models"""
+    
+    def __init__(self):
+        """Initialize LLM client with DashScope API"""
+        if DASHSCOPE_API_KEY:
+            self.client = OpenAI(
+                api_key=DASHSCOPE_API_KEY,
+                base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            )
+            self.use_real_llm = True
+            print("Using real LLM implementation")
+        else:
+            self.client = None
+            self.use_real_llm = False
+            print("Warning: DASHSCOPE_API_KEY not found, using mock implementation")
     
     async def parse_resume(self, resume_text: str) -> str:
         """
         Parse resume text and return structured JSON
         """
+        logger.info(f"[LLMClient] parse_resume called. Input text (first 200 chars): {resume_text[:200]}")
+        try:
+            if self.use_real_llm:
+                logger.info("[LLMClient] Using real LLM API for resume parsing.")
+                response = await self._call_real_llm(resume_text)
+            else:
+                logger.info("[LLMClient] Using mock LLM for resume parsing.")
+                response = await self._call_mock_llm(resume_text)
+            logger.info(f"[LLMClient] LLM raw response (first 1000 chars): {response[:1000]}")
+            return response
+        except Exception as e:
+            logger.error(f"[LLMClient] Error in parse_resume: {e}")
+            raise
+    
+    async def _call_real_llm(self, resume_text: str) -> str:
+        """Call real DashScope LLM API"""
+        logger.info(f"[LLMClient] _call_real_llm called. Input text (first 200 chars): {resume_text[:200]}")
+        try:
+            messages = build_parse_resume_messages(resume_text)
+            
+            response = self.client.chat.completions.create(
+                model="qwen-turbo-latest",
+                messages=messages,
+                temperature=0.2,
+                max_tokens=8000,  # Increased from 2048 to handle longer resumes
+            )
+            logger.info(f"[LLMClient] OpenAI API response: {response}")
+            content = response.choices[0].message.content
+            logger.info(f"[LLMClient] Extracted content (first 1000 chars): {content[:1000]}")
+            return content
+        except Exception as e:
+            logger.error(f"[LLMClient] Error calling real LLM: {e}")
+            logger.error(f"[LLMClient] Error type: {type(e).__name__}")
+            logger.error(f"[LLMClient] Error details: {str(e)}")
+            # Fallback to mock implementation
+            logger.warning("[LLMClient] Falling back to mock implementation")
+            return await self._call_mock_llm(resume_text)
+    
+    async def _call_mock_llm(self, resume_text: str) -> str:
+        """Mock implementation for development/testing"""
+        logger.info(f"[LLMClient] _call_mock_llm called. Input text (first 200 chars): {resume_text[:200]}")
         # Mock implementation - in production, this would call actual LLM API
         mock_resume = {
             "basics": {
@@ -159,6 +219,7 @@ class LLMClient:
         """
         Generate optimization suggestions based on resume data
         """
+        logger.info(f"[LLMClient] generate_suggestions called. Resume data keys: {list(resume_data.keys())}")
         # Mock implementation - in production, this would call actual LLM API
         # This method is now less important since suggestions are embedded in the resume data
         mock_suggestions = [
@@ -182,6 +243,7 @@ class LLMClient:
             }
         ]
         
+        logger.info(f"[LLMClient] Suggestions result (first 1000 chars): {str(mock_suggestions)[:1000]}")
         return json.dumps(mock_suggestions, ensure_ascii=False)
     
     async def chat(self, prompt: str) -> str:

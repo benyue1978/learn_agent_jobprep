@@ -1,7 +1,137 @@
 """
 Prompt templates for LLM interactions
 """
+from typing import List, Dict
 
+def build_parse_resume_messages(text: str) -> List[Dict[str, str]]:
+    """Build messages for resume parsing with LLM"""
+    return [
+        {
+            "role": "system",
+            "content": """你是一个专业的简历解析助手，能够从原始简历文本中提取结构化信息并生成改进建议。
+
+你的任务是：
+1. 准确提取简历中的基本信息、教育背景、工作经验、技能等
+2. 为每个字段生成具体的改进建议，建议直接嵌入在对应字段中
+3. 严格按照指定的JSON格式返回结果
+4. 如果用户提供的信息不完整，允许字段为空字符串
+
+返回格式要求：
+- 只返回有效的JSON字符串
+- 不要包含任何额外的说明文字
+- 确保JSON格式完全正确，可以被直接解析
+- suggestions 字段嵌入在各个对象中，而不是单独列出
+- 如果信息不足，字段可以为空字符串
+- 建议只能引用实际存在的字段"""
+        },
+        {
+            "role": "user",
+            "content": f"""请解析以下简历文本，提取结构化信息并生成改进建议：
+
+{text}
+
+请按照以下JSON格式返回结果：
+{{
+    "basics": {{
+        "name": "姓名",
+        "email": "邮箱",
+        "phone": "电话",
+        "location": "地点",
+        "summary": "个人简介",
+        "suggestions": [
+            {{
+                "field": "basics.summary",
+                "current": "当前内容",
+                "suggested": "建议内容",
+                "reason": "改进理由"
+            }}
+        ]
+    }},
+    "education": [
+        {{
+            "institution": "学校名称",
+            "degree": "学位",
+            "field_of_study": "专业",
+            "start_date": "开始时间",
+            "end_date": "结束时间",
+            "gpa": "GPA",
+            "courses": ["相关课程"],
+            "suggestions": [
+                {{
+                    "field": "education[0].gpa",
+                    "current": "当前内容",
+                    "suggested": "建议内容",
+                    "reason": "改进理由"
+                }}
+            ]
+        }}
+    ],
+    "work": [
+        {{
+            "company": "公司名称",
+            "position": "职位",
+            "start_date": "开始时间",
+            "end_date": "结束时间",
+            "description": "工作描述",
+            "achievements": ["成就列表"],
+            "suggestions": [
+                {{
+                    "field": "work[0].description",
+                    "current": "当前内容",
+                    "suggested": "建议内容",
+                    "reason": "改进理由"
+                }}
+            ]
+        }}
+    ],
+    "skills": [
+        {{
+            "name": "技能名称",
+            "level": "熟练程度",
+            "category": "技能类别",
+            "suggestions": [
+                {{
+                    "field": "skills[0].level",
+                    "current": "当前内容",
+                    "suggested": "建议内容",
+                    "reason": "改进理由"
+                }}
+            ]
+        }}
+    ],
+    "certificates": [
+        {{
+            "name": "证书名称",
+            "issuer": "颁发机构",
+            "date": "获得时间",
+            "description": "证书描述",
+            "suggestions": [
+                {{
+                    "field": "certificates[0].description",
+                    "current": "当前内容",
+                    "suggested": "建议内容",
+                    "reason": "改进理由"
+                }}
+            ]
+        }}
+    ]
+}}
+
+重要要求：
+1. 如果用户提供的信息不完整，允许字段为空字符串
+2. 建议只能引用实际存在的非空字段
+3. 不要引用空数组的字段（如空的 achievements 数组）
+4. 如果输入文本信息不足，请基于常见情况补充合理的默认值
+5. 确保数据结构完整，所有必需字段都有值
+6. 不必为每个字段生成建议，着重关注重要的瑕疵和重要的简历加分项、减分项
+7. 建议内容为修改后简历内容，不是建议的操作或者建议的改进动作
+8. 重点关注：个人简介的亮点突出、工作描述的量化成果、技能的专业性
+9. 字段路径格式：basics.summary, work[0].description, skills[0].level 等"""
+        }
+    ]
+
+
+# 保留原有的 prompt 字符串用于兼容性
 RESUME_PARSE_PROMPT = """
 请分析以下简历文本，提取结构化信息并生成改进建议。
 
@@ -55,9 +185,14 @@ RESUME_PARSE_PROMPT = """
             }}
         ]
     }},
-    "suggestions": {{
-        "field_key": ["建议内容"]
-    }}
+    "suggestions": [
+        {{
+            "field": "字段路径",
+            "current": "当前内容",
+            "suggested": "建议内容",
+            "reason": "改进理由"
+        }}
+    ]
 }}
 
 请确保：
