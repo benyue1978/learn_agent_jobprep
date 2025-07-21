@@ -24,8 +24,8 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(resume.router)
-app.include_router(chat.router)
+app.include_router(resume.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")
 
 @app.get("/test")
 async def test_endpoint():

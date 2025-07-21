@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Any, List
 from src.models.resume import Resume, ParseResumeResponse
-from src.langgraph.workflow import resume_workflow
+# from src.langgraph.parse_resume.workflow import resume_workflow  # TODO: 待实现
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +26,8 @@ class ResumeService:
             logger.info("Starting resume parsing with LangGraph workflow")
             
             # Use LangGraph workflow to parse resume
+            from src.langgraph.parse_resume.workflow import resume_workflow
             result = await resume_workflow.run(raw_text)
-            
             logger.info("Resume parsing completed successfully")
             return result
             

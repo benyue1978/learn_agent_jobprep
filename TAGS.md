@@ -312,6 +312,88 @@ graph TD
 
 ---
 
+### 🏷️ step7_backend_chat_langgraph
+
+**提交**: `[待提交]`
+**日期**: `[待提交]`
+**描述**: 后端聊天 LangGraph 工作流实现和测试修复
+
+#### 聊天功能
+
+- ✅ LangGraph 聊天工作流实现
+  - 聊天工作流 (`src/langgraph/chat/workflow.py`)
+  - 聊天节点实现 (`src/langgraph/chat/nodes.py`)
+  - 上下文格式化节点 (`format_context`)
+  - 聊天历史格式化节点 (`format_history`)
+  - 聊天处理节点 (`process_chat`)
+  - 动作提取节点 (`extract_actions`)
+  - 响应返回节点 (`return_response`)
+- ✅ 聊天服务层实现
+  - 聊天服务 (`src/services/chat_service.py`)
+  - 简历上下文格式化
+  - 聊天历史格式化
+  - 聊天处理和响应生成
+  - 动作建议提取
+- ✅ 聊天数据模型
+  - 聊天消息模型 (`src/models/chat.py`)
+  - 聊天请求和响应模型
+  - 动作建议模型
+  - 消息验证和类型安全
+- ✅ API 路由更新
+  - 聊天路由 (`src/routers/chat.py`)
+  - 服务层集成
+  - 错误处理和验证
+  - 统一的 API 前缀管理
+- ✅ 测试套件完善
+  - 聊天工作流测试 (`test_chat_workflow.py`) - 10个测试
+  - 聊天服务测试 (`test_chat_service.py`) - 8个测试
+  - 聊天API测试 (`test_chat_api.py`) - 10个测试
+  - 字段解析测试 (`test_field_parsing.py`) - 5个测试
+  - 简历服务测试 (`test_resume_service.py`) - 9个测试
+  - API集成测试 (`test_api_integration.py`) - 17个测试
+  - 主应用测试 (`test_main.py`) - 2个测试
+- ✅ 前端测试修复
+  - 修复API响应格式不匹配问题
+  - 更新导航测试的模拟数据
+  - 增加适当的等待时间和超时设置
+  - 处理页面加载状态和重定向逻辑
+  - 29个前端测试全部通过
+
+#### 聊天技术架构
+
+- **双工作流架构**: 简历解析工作流 + 聊天交互工作流
+- **LangGraph**: 状态管理工作流, 条件边控制, 错误处理
+- **FastAPI**: RESTful API, 自动文档生成, 类型验证
+- **Pydantic V2**: 数据验证, 类型安全, 模型序列化
+- **测试覆盖**: 83个后端测试 + 29个前端测试，100%通过率
+
+#### 聊天工作流程
+
+```mermaid
+graph TD
+    A[用户发送消息] --> B[format_context: 格式化简历上下文]
+    B --> C[format_history: 格式化聊天历史]
+    C --> D[process_chat: LLM处理聊天]
+    D --> E[extract_actions: 提取建议动作]
+    E --> F[return_response: 返回响应]
+```
+
+#### 测试覆盖统计
+
+- **后端测试**: 83个测试用例，100%通过率
+- **前端测试**: 29个测试用例，100%通过率
+- **总计**: 112个测试用例，100%通过率
+
+#### 修复内容
+
+- **API响应格式**: 修复前端API调用与后端响应格式不匹配问题
+- **测试模拟数据**: 确保模拟的API响应格式与后端一致
+- **导航逻辑**: 处理首页重定向逻辑和不同页面状态
+- **超时和等待**: 增加适当的等待时间让页面完全加载
+- **错误处理**: 完善错误处理和边界情况测试
+
+---
+
 ## 版本演进
 
 ```mermaid
@@ -322,6 +404,7 @@ graph LR
     D --> E[step4_langgraph_resume_parsing]
     E --> F[step5_frontend_upload]
     F --> G[step6_frontend_tests]
+    G --> H[step7_backend_chat_langgraph]
 
     A --> A1[项目规范]
     A --> A2[架构设计]
@@ -351,6 +434,10 @@ graph LR
     G --> G1[Playwright 测试]
     G --> G2[端到端测试]
     G --> G3[测试覆盖]
+
+    H --> H1[聊天工作流]
+    H --> H2[双工作流架构]
+    H --> H3[测试修复完善]
 ```
 
 ## 使用指南

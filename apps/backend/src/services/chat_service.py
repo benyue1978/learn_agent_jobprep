@@ -1,7 +1,7 @@
 import logging
 import json
 from typing import Dict, Any, List
-from src.models.resume import ChatRequest, ChatResponse, ChatMessage
+from src.models.chat import ChatRequest, ChatResponse, ChatMessage
 from src.llm.client import llm_client
 from src.llm.prompts import CHAT_PROMPT
 

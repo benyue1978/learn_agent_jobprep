@@ -90,8 +90,8 @@ export const api = {
   // Get current resume
   getResume: async (): Promise<Resume | null> => {
     try {
-      const response = await apiClient.get<Resume>('/api/resume');
-      return response.data;
+      const response = await apiClient.get<{resume: Resume}>('/api/resume');
+      return response.data.resume;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         return null;

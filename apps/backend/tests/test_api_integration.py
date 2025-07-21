@@ -365,14 +365,15 @@ class TestChatAPI:
         if response.status_code == 400:
             assert "No user message found" in response.json()["detail"]
     
-    def test_chat_test_endpoint(self):
-        """Test chat test endpoint"""
-        response = client.get("/api/chat/test")
-        
-        assert response.status_code == 200
-        data = response.json()
-        assert "message" in data
-        assert "test" in data["message"].lower()
+    # Chat test endpoint has been removed
+    # def test_chat_test_endpoint(self):
+    #     """Test chat test endpoint"""
+    #     response = client.get("/api/chat/test")
+    #     
+    #     assert response.status_code == 200
+    #     data = response.json()
+    #     assert "message" in data
+    #     assert "test" in data["message"].lower()
 
 
 class TestHealthEndpoints:

@@ -4,10 +4,10 @@ from src.models.resume import (
     AcceptSuggestionRequest, AcceptSuggestionResponse,
     SaveResumeRequest, SaveResumeResponse
 )
-from src.langgraph.workflow import resume_workflow
+# from src.langgraph.parse_resume.workflow import resume_workflow  # TODO: 待实现
 from src.services.resume_service import resume_service
 
-router = APIRouter(prefix="/api", tags=["resume"])
+router = APIRouter(tags=["resume"])
 
 # In-memory storage for demo purposes
 # In production, this should be replaced with a proper database
@@ -21,11 +21,8 @@ async def parse_resume(request: ParseResumeRequest):
     """
     try:
         # Use LangGraph workflow to parse resume
-        result = await resume_workflow.run(request.text)
-        
-        # Store the parsed resume for later use
+        result = await resume_service.parse_resume(request.text)
         resume_storage["current"] = result.resume
-        
         return result
     except ValueError as e:
         # Handle validation errors from LangGraph workflow

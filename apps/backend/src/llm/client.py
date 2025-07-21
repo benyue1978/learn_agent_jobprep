@@ -91,16 +91,30 @@ class LLMClient:
         
         return json.dumps(mock_suggestions, ensure_ascii=False)
     
-    async def chat(self, messages: list, context: Dict[str, Any] = None) -> str:
+    async def chat(self, prompt: str) -> str:
         """
-        Process chat messages and return response
+        Process chat prompt and return response
         """
         # Mock implementation - in production, this would call actual LLM API
-        last_message = messages[-1].content if messages else ""
         
-        if "分析" in last_message or "改进" in last_message:
-            return "根据您的简历，我建议在以下几个方面进行优化：\n\n1. **工作描述**：建议在work[0].description中添加更具体的技术栈和项目规模\n2. **个人总结**：可以在basics.summary中突出您的核心技能和成就\n3. **成就描述**：建议在work[0].achievements中使用具体的数字和指标"
-        elif "你好" in last_message or "您好" in last_message:
+        if "建议" in prompt or "改进" in prompt or "优化" in prompt:
+            return "request_suggestion"
+        elif "确认" in prompt or "同意" in prompt or "接受" in prompt:
+            return "confirm_suggestion"
+        elif "拒绝" in prompt or "不同意" in prompt or "不要" in prompt:
+            return "reject_suggestion"
+        elif "你好" in prompt or "您好" in prompt:
+            return "chat"
+        else:
+            return "chat"
+    
+    async def chat_response(self, prompt: str) -> str:
+        """
+        Generate chat response (not routing)
+        """
+        # Mock implementation - in production, this would call actual LLM API
+        
+        if "你好" in prompt or "您好" in prompt:
             return "您好！我是您的简历优化助手。我可以帮您分析简历、提供改进建议，或者回答关于简历的任何问题。请告诉我您需要什么帮助？"
         else:
             return "我理解您的问题。作为简历优化助手，我可以帮您：\n\n1. 分析简历结构和内容\n2. 提供具体的改进建议\n3. 优化描述语言\n4. 突出关键成就\n\n请告诉我您希望重点优化哪个方面？"

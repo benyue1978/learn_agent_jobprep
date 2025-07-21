@@ -1,6 +1,6 @@
 import pytest
 import json
-from src.langgraph.workflow import ResumeParsingWorkflow
+from src.langgraph.parse_resume.workflow import ResumeParsingWorkflow
 from src.models.resume import LangGraphState, Resume, Suggestion, BasicInfo, Education, WorkExperience
 
 

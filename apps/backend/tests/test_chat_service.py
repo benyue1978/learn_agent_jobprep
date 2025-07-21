@@ -1,7 +1,7 @@
 import pytest
 import asyncio
 from src.services.chat_service import chat_service
-from src.models.resume import ChatRequest, ChatMessage
+from src.models.chat import ChatRequest, ChatResponse, ChatMessage
 
 
 class TestChatService:

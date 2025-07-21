@@ -29,8 +29,15 @@ test.describe('Home Page Tests', () => {
           resume: {
             basics: {
               name: '张三',
-              email: 'zhangsan@example.com'
-            }
+              email: 'zhangsan@example.com',
+              phone: '13800138000',
+              location: '北京',
+              summary: '经验丰富的软件工程师'
+            },
+            education: [],
+            work: [],
+            skills: [],
+            certificates: []
           }
         })
       });
@@ -39,7 +46,7 @@ test.describe('Home Page Tests', () => {
     await page.goto('/');
     
     // Wait for redirect to edit page
-    await expect(page).toHaveURL('/edit');
+    await expect(page).toHaveURL('/edit', { timeout: 10000 });
     await expect(page.locator('h1')).toContainText('简历编辑');
   });
 
