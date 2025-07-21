@@ -8,11 +8,13 @@ import EducationSection from '@/components/resume/sections/EducationSection';
 import ExperienceSection from '@/components/resume/sections/ExperienceSection';
 import SkillsSection from '@/components/resume/sections/SkillsSection';
 import CertificatesSection from '@/components/resume/sections/CertificatesSection';
+import ChatWindow from '@/components/chat/ChatWindow';
 
 export default function EditPage() {
   const [resume, setResume] = useState<Resume | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [referencedContent, setReferencedContent] = useState<string | undefined>();
   const router = useRouter();
 
   const handleSuggestionAccept = async (field: string, suggested: string) => {
@@ -23,6 +25,10 @@ export default function EditPage() {
       console.error('Failed to accept suggestion:', error);
       // Optionally show error message to user
     }
+  };
+
+  const handleReference = (content: string) => {
+    setReferencedContent(content);
   };
 
   useEffect(() => {
@@ -118,40 +124,59 @@ export default function EditPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto py-8 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               简历编辑
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              查看和编辑你的结构化简历数据
+              查看和编辑你的结构化简历数据，与AI助手实时对话优化简历
             </p>
           </div>
 
-          {/* Resume Sections */}
-          <div className="space-y-8">
-            <BasicInfoSection basicInfo={resume.basics} onSuggestionAccept={handleSuggestionAccept} />
-            <EducationSection education={resume.education} onSuggestionAccept={handleSuggestionAccept} />
-            <ExperienceSection work={resume.work} onSuggestionAccept={handleSuggestionAccept} />
-            <SkillsSection skills={resume.skills} onSuggestionAccept={handleSuggestionAccept} />
-            <CertificatesSection certificates={resume.certificates} onSuggestionAccept={handleSuggestionAccept} />
-          </div>
+          {/* Main Content - Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Resume Content */}
+            <div className="lg:col-span-2">
+              <div className="space-y-8">
+                <BasicInfoSection basicInfo={resume.basics} onSuggestionAccept={handleSuggestionAccept} onReference={handleReference} />
+                <EducationSection education={resume.education} onSuggestionAccept={handleSuggestionAccept} onReference={handleReference} />
+                <ExperienceSection work={resume.work} onSuggestionAccept={handleSuggestionAccept} onReference={handleReference} />
+                <SkillsSection skills={resume.skills} onSuggestionAccept={handleSuggestionAccept} onReference={handleReference} />
+                <CertificatesSection certificates={resume.certificates} onSuggestionAccept={handleSuggestionAccept} onReference={handleReference} />
+              </div>
 
-          {/* Actions */}
-          <div className="mt-8 flex gap-4 justify-center">
-            <button
-              onClick={() => router.push('/upload')}
-              className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              重新上传
-            </button>
-            <button
-              onClick={() => router.push('/test')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              查看测试页面
-            </button>
+              {/* Actions */}
+              <div className="mt-8 flex gap-4 justify-center">
+                <button
+                  onClick={() => router.push('/upload')}
+                  className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  重新上传
+                </button>
+                <button
+                  onClick={() => router.push('/test')}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  查看测试页面
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column - Chat Window */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-8">
+                <ChatWindow
+                  isOpen={true}
+                  onClose={() => {
+                    setReferencedContent(undefined);
+                  }}
+                  onSuggestionAccept={handleSuggestionAccept}
+                  referencedContent={referencedContent}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

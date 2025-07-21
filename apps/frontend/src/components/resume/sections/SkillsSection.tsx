@@ -9,9 +9,10 @@ interface Skill {
 interface SkillsSectionProps {
   skills: Skill[];
   onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
+  onReference: (content: string) => void;
 }
 
-export default function SkillsSection({ skills, onSuggestionAccept }: SkillsSectionProps) {
+export default function SkillsSection({ skills, onSuggestionAccept, onReference }: SkillsSectionProps) {
   if (!skills || skills.length === 0) {
     return null;
   }
@@ -31,6 +32,7 @@ export default function SkillsSection({ skills, onSuggestionAccept }: SkillsSect
             key={index} 
             skill={skill} 
             onSuggestionAccept={onSuggestionAccept}
+            onReference={onReference}
           />
         ))}
       </div>

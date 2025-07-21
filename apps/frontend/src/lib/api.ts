@@ -3,9 +3,18 @@ import axios from 'axios';
 // API base URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// Create axios instance
+// Create axios instance for backend API
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Create axios instance for frontend API routes
+const frontendApiClient = axios.create({
+  baseURL: '',  // Use relative URLs for frontend API routes
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -89,6 +98,24 @@ export interface AcceptSuggestionRequest {
   suggested: string;
 }
 
+// Chat related types
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp?: string;
+  suggestion?: Suggestion;
+}
+
+export interface ChatRequest {
+  message: string;
+  referencedContent?: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+  suggestion?: Suggestion;
+}
+
 // API functions
 export const api = {
   // Test endpoint
@@ -138,6 +165,12 @@ export const api = {
     await apiClient.post('/api/resume', {
       resume,
     });
+  },
+
+  // Chat endpoint - use frontend API route
+  chat: async (request: ChatRequest): Promise<ChatResponse> => {
+    const response = await frontendApiClient.post<ChatResponse>('/api/chat', request);
+    return response.data;
   },
 };
 

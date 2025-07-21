@@ -10,9 +10,10 @@ interface Certificate {
 interface CertificatesSectionProps {
   certificates: Certificate[];
   onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
+  onReference: (content: string) => void;
 }
 
-export default function CertificatesSection({ certificates, onSuggestionAccept }: CertificatesSectionProps) {
+export default function CertificatesSection({ certificates, onSuggestionAccept, onReference }: CertificatesSectionProps) {
   if (!certificates || certificates.length === 0) {
     return null;
   }
@@ -32,6 +33,7 @@ export default function CertificatesSection({ certificates, onSuggestionAccept }
             key={index} 
             certificate={cert} 
             onSuggestionAccept={onSuggestionAccept}
+            onReference={onReference}
           />
         ))}
       </div>

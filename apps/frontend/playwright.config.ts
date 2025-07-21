@@ -68,4 +68,13 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },
+
+  /* Global timeout settings */
+  timeout: 60000, // 60 seconds for individual tests
+  expect: {
+    timeout: 10000, // 10 seconds for expect assertions
+  },
+
+  /* Test groups */
+  grep: process.env.TEST_GROUP ? new RegExp(process.env.TEST_GROUP) : undefined,
 }); 

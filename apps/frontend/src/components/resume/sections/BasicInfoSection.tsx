@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Suggestion } from '@/lib/api';
 import SuggestionCard from '../suggestions/SuggestionCard';
+import ReferenceButton from '../ReferenceButton';
 
 interface BasicInfo {
   name: string;
@@ -14,9 +15,10 @@ interface BasicInfo {
 interface BasicInfoSectionProps {
   basicInfo: BasicInfo;
   onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
+  onReference: (content: string) => void;
 }
 
-export default function BasicInfoSection({ basicInfo, onSuggestionAccept }: BasicInfoSectionProps) {
+export default function BasicInfoSection({ basicInfo, onSuggestionAccept, onReference }: BasicInfoSectionProps) {
   const [rejectedSuggestions, setRejectedSuggestions] = useState<Set<string>>(new Set());
 
   const handleAccept = async (field: string, suggested: string) => {
@@ -43,13 +45,28 @@ export default function BasicInfoSection({ basicInfo, onSuggestionAccept }: Basi
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              {basicInfo.name}
-            </h3>
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {basicInfo.name}
+              </h3>
+              <ReferenceButton
+                content={`姓名：${basicInfo.name}`}
+                onReference={onReference}
+                className="ml-2"
+              />
+            </div>
             {basicInfo.summary && (
-              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                {basicInfo.summary}
-              </p>
+              <div className="relative">
+                <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed pr-16">
+                  {basicInfo.summary}
+                </p>
+                <div className="absolute top-0 right-0">
+                  <ReferenceButton
+                    content={`个人总结：${basicInfo.summary}`}
+                    onReference={onReference}
+                  />
+                </div>
+              </div>
             )}
           </div>
           

@@ -12,9 +12,10 @@ interface WorkExperience {
 interface ExperienceSectionProps {
   work: WorkExperience[];
   onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
+  onReference: (content: string) => void;
 }
 
-export default function ExperienceSection({ work, onSuggestionAccept }: ExperienceSectionProps) {
+export default function ExperienceSection({ work, onSuggestionAccept, onReference }: ExperienceSectionProps) {
   if (!work || work.length === 0) {
     return null;
   }
@@ -34,6 +35,7 @@ export default function ExperienceSection({ work, onSuggestionAccept }: Experien
             key={index} 
             experience={exp} 
             onSuggestionAccept={onSuggestionAccept}
+            onReference={onReference}
           />
         ))}
       </div>

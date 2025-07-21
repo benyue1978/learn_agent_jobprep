@@ -12,9 +12,10 @@ interface Education {
 interface EducationSectionProps {
   education: Education[];
   onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
+  onReference: (content: string) => void;
 }
 
-export default function EducationSection({ education, onSuggestionAccept }: EducationSectionProps) {
+export default function EducationSection({ education, onSuggestionAccept, onReference }: EducationSectionProps) {
   if (!education || education.length === 0) {
     return null;
   }
@@ -34,6 +35,7 @@ export default function EducationSection({ education, onSuggestionAccept }: Educ
             key={index} 
             education={edu} 
             onSuggestionAccept={onSuggestionAccept}
+            onReference={onReference}
           />
         ))}
       </div>
