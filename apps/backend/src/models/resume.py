@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any
 from enum import Enum
 
+class Suggestion(BaseModel):
+    """Suggestion model"""
+    field: str = Field(..., description="Field path to update")
+    current: str = Field(..., description="Current value")
+    suggested: str = Field(..., description="Suggested value")
+    reason: str = Field(..., description="Reason for suggestion")
+
 # Resume相关model
 class BasicInfo(BaseModel):
     """Basic information model"""
@@ -10,6 +17,7 @@ class BasicInfo(BaseModel):
     phone: Optional[str] = Field(None, description="Phone number")
     location: Optional[str] = Field(None, description="Location")
     summary: Optional[str] = Field(None, description="Professional summary")
+    suggestions: Optional[List[Suggestion]] = Field(None, description="Optimization suggestions")
 
 class Education(BaseModel):
     """Education experience model"""
@@ -19,6 +27,7 @@ class Education(BaseModel):
     start_date: str = Field(..., description="Start date (YYYY-MM)")
     end_date: Optional[str] = Field(None, description="End date (YYYY-MM)")
     gpa: Optional[str] = Field(None, description="GPA")
+    suggestions: Optional[List[Suggestion]] = Field(None, description="Optimization suggestions")
 
 class WorkExperience(BaseModel):
     """Work experience model"""
@@ -28,12 +37,14 @@ class WorkExperience(BaseModel):
     end_date: Optional[str] = Field(None, description="End date (YYYY-MM)")
     description: str = Field(..., description="Job description")
     achievements: Optional[List[str]] = Field(None, description="Key achievements")
+    suggestions: Optional[List[Suggestion]] = Field(None, description="Optimization suggestions")
 
 class Skill(BaseModel):
     """Skill model"""
     name: str = Field(..., description="Skill name")
     level: Optional[str] = Field(None, description="Skill level")
     category: Optional[str] = Field(None, description="Skill category")
+    suggestions: Optional[List[Suggestion]] = Field(None, description="Optimization suggestions")
 
 class Certificate(BaseModel):
     """Certificate model"""
@@ -41,6 +52,7 @@ class Certificate(BaseModel):
     issuer: str = Field(..., description="Issuing organization")
     date: str = Field(..., description="Issue date (YYYY-MM)")
     description: Optional[str] = Field(None, description="Certificate description")
+    suggestions: Optional[List[Suggestion]] = Field(None, description="Optimization suggestions")
 
 class Resume(BaseModel):
     """Complete resume model"""
@@ -58,13 +70,6 @@ class Resume(BaseModel):
         if field_name in ['education', 'work'] and len(v) == 0:
             raise ValueError(f"{field_name} must have at least one item")
         return v
-
-class Suggestion(BaseModel):
-    """Suggestion model"""
-    field: str = Field(..., description="Field path to update")
-    current: str = Field(..., description="Current value")
-    suggested: str = Field(..., description="Suggested value")
-    reason: str = Field(..., description="Reason for suggestion")
 
 # 解析简历相关
 class ParseResumeRequest(BaseModel):

@@ -30,6 +30,7 @@ export interface Resume {
     phone: string;
     location: string;
     summary: string;
+    suggestions?: Suggestion[];
   };
   education: Array<{
     institution: string;
@@ -37,6 +38,7 @@ export interface Resume {
     field_of_study: string;
     start_date: string;
     end_date?: string;
+    suggestions?: Suggestion[];
   }>;
   work: Array<{
     company: string;
@@ -44,17 +46,21 @@ export interface Resume {
     description: string;
     start_date: string;
     end_date?: string;
+    achievements?: string[];
+    suggestions?: Suggestion[];
   }>;
   skills: Array<{
     name: string;
     level?: string;
     category?: string;
+    suggestions?: Suggestion[];
   }>;
   certificates: Array<{
     name: string;
     issuer: string;
     date: string;
     description?: string;
+    suggestions?: Suggestion[];
   }>;
 }
 
@@ -72,6 +78,15 @@ export interface ParseResumeResponse {
 
 export interface ParseResumeRequest {
   text: string;
+}
+
+export interface AcceptSuggestionResponse {
+  resume: Resume;
+}
+
+export interface AcceptSuggestionRequest {
+  field: string;
+  suggested: string;
 }
 
 // API functions
@@ -107,6 +122,22 @@ export const api = {
       }
       throw error;
     }
+  },
+
+  // Accept suggestion
+  acceptSuggestion: async (field: string, suggested: string): Promise<Resume> => {
+    const response = await apiClient.post<AcceptSuggestionResponse>('/api/accept_suggestion', {
+      field,
+      suggested,
+    });
+    return response.data.resume;
+  },
+
+  // Save resume
+  saveResume: async (resume: Resume): Promise<void> => {
+    await apiClient.post('/api/resume', {
+      resume,
+    });
   },
 };
 

@@ -286,15 +286,46 @@ class ResumeParsingWorkflow:
                 error_message="No resume data available for final result"
             )
         
+        # Extract all suggestions from the resume data
+        all_suggestions = []
+        resume = state.parsed_resume
+        
+        # Extract suggestions from basics
+        if resume.basics.suggestions:
+            all_suggestions.extend(resume.basics.suggestions)
+        
+        # Extract suggestions from education
+        for edu in resume.education:
+            if edu.suggestions:
+                all_suggestions.extend(edu.suggestions)
+        
+        # Extract suggestions from work experience
+        for work in resume.work:
+            if work.suggestions:
+                all_suggestions.extend(work.suggestions)
+        
+        # Extract suggestions from skills
+        for skill in resume.skills:
+            if skill.suggestions:
+                all_suggestions.extend(skill.suggestions)
+        
+        # Extract suggestions from certificates
+        for cert in resume.certificates:
+            if cert.suggestions:
+                all_suggestions.extend(cert.suggestions)
+        
+        # Combine with any additional suggestions from the workflow
+        all_suggestions.extend(state.suggestions)
+        
         final_result = ParseResumeResponse(
             resume=state.parsed_resume,
-            suggestions=state.suggestions
+            suggestions=all_suggestions
         )
         
         return LangGraphState(
             resume_text=state.resume_text,
             parsed_resume=state.parsed_resume,
-            suggestions=state.suggestions,
+            suggestions=all_suggestions,
             validation_errors=state.validation_errors,
             final_result=final_result,
             error_message=state.error_message

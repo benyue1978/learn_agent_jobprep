@@ -11,9 +11,10 @@ interface WorkExperience {
 
 interface ExperienceSectionProps {
   work: WorkExperience[];
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function ExperienceSection({ work }: ExperienceSectionProps) {
+export default function ExperienceSection({ work, onSuggestionAccept }: ExperienceSectionProps) {
   if (!work || work.length === 0) {
     return null;
   }
@@ -29,7 +30,11 @@ export default function ExperienceSection({ work }: ExperienceSectionProps) {
       
       <div className="space-y-4">
         {work.map((exp, index) => (
-          <ExperienceItem key={index} experience={exp} />
+          <ExperienceItem 
+            key={index} 
+            experience={exp} 
+            onSuggestionAccept={onSuggestionAccept}
+          />
         ))}
       </div>
     </section>

@@ -15,6 +15,16 @@ export default function EditPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const handleSuggestionAccept = async (field: string, suggested: string) => {
+    try {
+      const updatedResume = await api.acceptSuggestion(field, suggested);
+      setResume(updatedResume);
+    } catch (error) {
+      console.error('Failed to accept suggestion:', error);
+      // Optionally show error message to user
+    }
+  };
+
   useEffect(() => {
     const fetchResume = async () => {
       try {
@@ -121,11 +131,11 @@ export default function EditPage() {
 
           {/* Resume Sections */}
           <div className="space-y-8">
-            <BasicInfoSection basicInfo={resume.basics} />
-            <EducationSection education={resume.education} />
-            <ExperienceSection work={resume.work} />
-            <SkillsSection skills={resume.skills} />
-            <CertificatesSection certificates={resume.certificates} />
+            <BasicInfoSection basicInfo={resume.basics} onSuggestionAccept={handleSuggestionAccept} />
+            <EducationSection education={resume.education} onSuggestionAccept={handleSuggestionAccept} />
+            <ExperienceSection work={resume.work} onSuggestionAccept={handleSuggestionAccept} />
+            <SkillsSection skills={resume.skills} onSuggestionAccept={handleSuggestionAccept} />
+            <CertificatesSection certificates={resume.certificates} onSuggestionAccept={handleSuggestionAccept} />
           </div>
 
           {/* Actions */}

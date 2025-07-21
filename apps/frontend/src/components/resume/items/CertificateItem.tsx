@@ -1,15 +1,35 @@
+import { useState } from 'react';
+import { Suggestion } from '@/lib/api';
+import SuggestionCard from '../suggestions/SuggestionCard';
+
 interface Certificate {
   name: string;
   issuer: string;
   date: string;
   description?: string;
+  suggestions?: Suggestion[];
 }
 
 interface CertificateItemProps {
   certificate: Certificate;
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function CertificateItem({ certificate }: CertificateItemProps) {
+export default function CertificateItem({ certificate, onSuggestionAccept }: CertificateItemProps) {
+  const [rejectedSuggestions, setRejectedSuggestions] = useState<Set<string>>(new Set());
+
+  const handleAccept = async (field: string, suggested: string) => {
+    await onSuggestionAccept(field, suggested);
+  };
+
+  const handleReject = (suggestion: Suggestion) => {
+    setRejectedSuggestions(prev => new Set(prev).add(suggestion.field));
+  };
+
+  const visibleSuggestions = certificate.suggestions?.filter(
+    suggestion => !rejectedSuggestions.has(suggestion.field)
+  ) || [];
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-4">
       <div className="flex justify-between items-start mb-2">
@@ -31,12 +51,15 @@ export default function CertificateItem({ certificate }: CertificateItemProps) {
         </div>
       )}
       
-      {/* TODO: 显示建议 */}
-      <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-        <div className="text-xs text-gray-400 dark:text-gray-500 italic">
-          // TODO: 显示建议
-        </div>
-      </div>
+      {/* Suggestions */}
+      {visibleSuggestions.map((suggestion, index) => (
+        <SuggestionCard
+          key={`${suggestion.field}-${index}`}
+          suggestion={suggestion}
+          onAccept={handleAccept}
+          onReject={() => handleReject(suggestion)}
+        />
+      ))}
     </div>
   );
 } 

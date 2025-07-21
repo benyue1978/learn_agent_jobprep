@@ -11,9 +11,10 @@ interface Education {
 
 interface EducationSectionProps {
   education: Education[];
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function EducationSection({ education }: EducationSectionProps) {
+export default function EducationSection({ education, onSuggestionAccept }: EducationSectionProps) {
   if (!education || education.length === 0) {
     return null;
   }
@@ -29,7 +30,11 @@ export default function EducationSection({ education }: EducationSectionProps) {
       
       <div className="space-y-4">
         {education.map((edu, index) => (
-          <EducationItem key={index} education={edu} />
+          <EducationItem 
+            key={index} 
+            education={edu} 
+            onSuggestionAccept={onSuggestionAccept}
+          />
         ))}
       </div>
     </section>

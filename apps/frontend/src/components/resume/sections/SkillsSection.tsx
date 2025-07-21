@@ -8,9 +8,10 @@ interface Skill {
 
 interface SkillsSectionProps {
   skills: Skill[];
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function SkillsSection({ skills }: SkillsSectionProps) {
+export default function SkillsSection({ skills, onSuggestionAccept }: SkillsSectionProps) {
   if (!skills || skills.length === 0) {
     return null;
   }
@@ -26,7 +27,11 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {skills.map((skill, index) => (
-          <SkillItem key={index} skill={skill} />
+          <SkillItem 
+            key={index} 
+            skill={skill} 
+            onSuggestionAccept={onSuggestionAccept}
+          />
         ))}
       </div>
     </section>

@@ -9,9 +9,10 @@ interface Certificate {
 
 interface CertificatesSectionProps {
   certificates: Certificate[];
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function CertificatesSection({ certificates }: CertificatesSectionProps) {
+export default function CertificatesSection({ certificates, onSuggestionAccept }: CertificatesSectionProps) {
   if (!certificates || certificates.length === 0) {
     return null;
   }
@@ -27,7 +28,11 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
       
       <div className="space-y-4">
         {certificates.map((cert, index) => (
-          <CertificateItem key={index} certificate={cert} />
+          <CertificateItem 
+            key={index} 
+            certificate={cert} 
+            onSuggestionAccept={onSuggestionAccept}
+          />
         ))}
       </div>
     </section>

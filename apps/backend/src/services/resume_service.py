@@ -56,12 +56,62 @@ class ResumeService:
             # Update the resume
             updated_resume = self._update_resume_field(current_resume, path_parts, suggested_value)
             
+            # Remove the accepted suggestion from all suggestion lists
+            updated_resume = self._remove_accepted_suggestion(updated_resume, field)
+            
             logger.info(f"Suggestion accepted successfully for field: {field}")
             return updated_resume
             
         except Exception as e:
             logger.error(f"Error accepting suggestion: {str(e)}")
             raise
+    
+    def _remove_accepted_suggestion(self, resume: Resume, accepted_field: str) -> Resume:
+        """Remove the accepted suggestion from all suggestion lists"""
+        # Create a copy of the resume
+        resume_dict = resume.model_dump()
+        
+        # Remove from basics suggestions
+        if resume_dict.get('basics', {}).get('suggestions'):
+            resume_dict['basics']['suggestions'] = [
+                s for s in resume_dict['basics']['suggestions'] 
+                if s['field'] != accepted_field
+            ]
+        
+        # Remove from education suggestions
+        for edu in resume_dict.get('education', []):
+            if edu.get('suggestions'):
+                edu['suggestions'] = [
+                    s for s in edu['suggestions'] 
+                    if s['field'] != accepted_field
+                ]
+        
+        # Remove from work suggestions
+        for work in resume_dict.get('work', []):
+            if work.get('suggestions'):
+                work['suggestions'] = [
+                    s for s in work['suggestions'] 
+                    if s['field'] != accepted_field
+                ]
+        
+        # Remove from skills suggestions
+        for skill in resume_dict.get('skills', []):
+            if skill.get('suggestions'):
+                skill['suggestions'] = [
+                    s for s in skill['suggestions'] 
+                    if s['field'] != accepted_field
+                ]
+        
+        # Remove from certificates suggestions
+        for cert in resume_dict.get('certificates', []):
+            if cert.get('suggestions'):
+                cert['suggestions'] = [
+                    s for s in cert['suggestions'] 
+                    if s['field'] != accepted_field
+                ]
+        
+        # Create new Resume object from updated dict
+        return Resume(**resume_dict)
     
     def _parse_field_path(self, field_path: str) -> List:
         """Parse field path like 'work[0].description' into parts"""

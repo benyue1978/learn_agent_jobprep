@@ -1,14 +1,34 @@
+import { useState } from 'react';
+import { Suggestion } from '@/lib/api';
+import SuggestionCard from '../suggestions/SuggestionCard';
+
 interface Skill {
   name: string;
   level?: string;
   category?: string;
+  suggestions?: Suggestion[];
 }
 
 interface SkillItemProps {
   skill: Skill;
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function SkillItem({ skill }: SkillItemProps) {
+export default function SkillItem({ skill, onSuggestionAccept }: SkillItemProps) {
+  const [rejectedSuggestions, setRejectedSuggestions] = useState<Set<string>>(new Set());
+
+  const handleAccept = async (field: string, suggested: string) => {
+    await onSuggestionAccept(field, suggested);
+  };
+
+  const handleReject = (suggestion: Suggestion) => {
+    setRejectedSuggestions(prev => new Set(prev).add(suggestion.field));
+  };
+
+  const visibleSuggestions = skill.suggestions?.filter(
+    suggestion => !rejectedSuggestions.has(suggestion.field)
+  ) || [];
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 mb-3">
       <div className="flex justify-between items-center">
@@ -30,12 +50,15 @@ export default function SkillItem({ skill }: SkillItemProps) {
         )}
       </div>
       
-      {/* TODO: 显示建议 */}
-      <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-        <div className="text-xs text-gray-400 dark:text-gray-500 italic">
-          // TODO: 显示建议
-        </div>
-      </div>
+      {/* Suggestions */}
+      {visibleSuggestions.map((suggestion, index) => (
+        <SuggestionCard
+          key={`${suggestion.field}-${index}`}
+          suggestion={suggestion}
+          onAccept={handleAccept}
+          onReject={() => handleReject(suggestion)}
+        />
+      ))}
     </div>
   );
 } 

@@ -1,16 +1,36 @@
+import { useState } from 'react';
+import { Suggestion } from '@/lib/api';
+import SuggestionCard from '../suggestions/SuggestionCard';
+
 interface BasicInfo {
   name: string;
   email: string;
   phone?: string;
   location?: string;
   summary?: string;
+  suggestions?: Suggestion[];
 }
 
 interface BasicInfoSectionProps {
   basicInfo: BasicInfo;
+  onSuggestionAccept: (field: string, suggested: string) => Promise<void>;
 }
 
-export default function BasicInfoSection({ basicInfo }: BasicInfoSectionProps) {
+export default function BasicInfoSection({ basicInfo, onSuggestionAccept }: BasicInfoSectionProps) {
+  const [rejectedSuggestions, setRejectedSuggestions] = useState<Set<string>>(new Set());
+
+  const handleAccept = async (field: string, suggested: string) => {
+    await onSuggestionAccept(field, suggested);
+  };
+
+  const handleReject = (suggestion: Suggestion) => {
+    setRejectedSuggestions(prev => new Set(prev).add(suggestion.field));
+  };
+
+  const visibleSuggestions = basicInfo.suggestions?.filter(
+    suggestion => !rejectedSuggestions.has(suggestion.field)
+  ) || [];
+
   return (
     <section className="mb-8">
       <div className="flex items-center mb-4">
@@ -62,12 +82,15 @@ export default function BasicInfoSection({ basicInfo }: BasicInfoSectionProps) {
           </div>
         </div>
         
-        {/* TODO: 显示建议 */}
-        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-          <div className="text-xs text-gray-400 dark:text-gray-500 italic">
-            // TODO: 显示建议
-          </div>
-        </div>
+        {/* Suggestions */}
+        {visibleSuggestions.map((suggestion, index) => (
+          <SuggestionCard
+            key={`${suggestion.field}-${index}`}
+            suggestion={suggestion}
+            onAccept={handleAccept}
+            onReject={() => handleReject(suggestion)}
+          />
+        ))}
       </div>
     </section>
   );
