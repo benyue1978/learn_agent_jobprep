@@ -113,6 +113,16 @@ class AcceptSuggestionResponse(BaseModel):
     resume: Resume = Field(..., description="Updated resume")
 
 
+class SaveResumeRequest(BaseModel):
+    """Save resume request model"""
+    resume: Resume = Field(..., description="Resume object to save")
+
+
+class SaveResumeResponse(BaseModel):
+    """Save resume response model"""
+    status: str = Field(..., description="Operation status")
+
+
 # LangGraph State Models
 class LangGraphState(BaseModel):
     """State for LangGraph workflow"""

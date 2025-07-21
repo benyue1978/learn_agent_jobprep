@@ -34,9 +34,9 @@ graph TD
 
 3. **API 路由** (`src/routers/`)
    - `/api/parse_resume` - 使用 LangGraph 解析简历
+   - `/api/resume` - 获取当前简历 (GET) / 保存完整简历 (POST)
    - `/api/accept_suggestion` - 接受优化建议
    - `/api/chat` - 聊天交互
-   - `/api/resume` - 获取当前简历
 
 ## 🚀 快速开始
 
@@ -73,6 +73,71 @@ Content-Type: application/json
 
 {
   "text": "张三\n邮箱: zhangsan@example.com\n教育: 清华大学\n工作: 阿里巴巴"
+}
+```
+
+### 保存简历
+
+```bash
+POST /api/resume
+Content-Type: application/json
+
+{
+  "resume": {
+    "basics": {
+      "name": "张三",
+      "email": "zhangsan@example.com",
+      "phone": "13800138000",
+      "location": "北京",
+      "summary": "经验丰富的软件工程师"
+    },
+    "education": [
+      {
+        "institution": "清华大学",
+        "degree": "计算机科学学士",
+        "field_of_study": "计算机科学与技术",
+        "start_date": "2018-09",
+        "end_date": "2022-07",
+        "gpa": "3.8/4.0"
+      }
+    ],
+    "work": [
+      {
+        "company": "阿里巴巴",
+        "position": "高级软件工程师",
+        "start_date": "2022-08",
+        "end_date": "2024-12",
+        "description": "负责电商平台后端开发",
+        "achievements": [
+          "优化系统性能，提升响应速度30%",
+          "设计并实现微服务架构"
+        ]
+      }
+    ],
+    "skills": [
+      {
+        "name": "Java",
+        "level": "高级",
+        "category": "编程语言"
+      }
+    ],
+    "certificates": [
+      {
+        "name": "AWS认证解决方案架构师",
+        "issuer": "Amazon Web Services",
+        "date": "2023-06",
+        "description": "云架构设计和部署认证"
+      }
+    ]
+  }
+}
+```
+
+**响应示例：**
+
+```json
+{
+  "status": "ok"
 }
 ```
 
@@ -145,12 +210,12 @@ Content-Type: application/json
    - `test_langgraph_workflow.py` - LangGraph 工作流 (10个测试)
 
 3. **集成测试** (Integration Tests)
-   - `test_api_integration.py` - API 端点集成 (12个测试)
+   - `test_api_integration.py` - API 端点集成 (17个测试)
    - `test_main.py` - 主应用功能 (2个测试)
 
 ### 测试统计
 
-总计：47个测试用例，100%通过率
+总计：52个测试用例，100%通过率
 
 ### 测试运行
 

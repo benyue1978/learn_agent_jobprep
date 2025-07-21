@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from src.models.resume import (
     ParseResumeRequest, ParseResumeResponse,
-    AcceptSuggestionRequest, AcceptSuggestionResponse
+    AcceptSuggestionRequest, AcceptSuggestionResponse,
+    SaveResumeRequest, SaveResumeResponse
 )
 from src.langgraph.workflow import resume_workflow
 from src.services.resume_service import resume_service
@@ -43,6 +44,28 @@ async def get_resume():
         raise HTTPException(status_code=404, detail="No resume found")
     
     return {"resume": resume_storage["current"]}
+
+
+@router.post("/resume", response_model=SaveResumeResponse)
+async def save_resume(request: SaveResumeRequest):
+    """
+    Save a complete resume object to backend memory (overwrites existing resume)
+    """
+    try:
+        # Validate the resume object using Pydantic validation
+        # The Resume model will automatically validate the structure
+        validated_resume = request.resume
+        
+        # Store the resume in memory (overwrites existing)
+        resume_storage["current"] = validated_resume
+        
+        return SaveResumeResponse(status="ok")
+    except ValueError as e:
+        # Handle validation errors from Pydantic
+        raise HTTPException(status_code=400, detail=f"Invalid resume structure: {str(e)}")
+    except Exception as e:
+        # Handle other errors
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @router.post("/accept_suggestion", response_model=AcceptSuggestionResponse)
