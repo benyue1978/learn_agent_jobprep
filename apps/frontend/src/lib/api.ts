@@ -45,8 +45,17 @@ export interface Resume {
     start_date: string;
     end_date?: string;
   }>;
-  skills: string[];
-  certificates: string[];
+  skills: Array<{
+    name: string;
+    level?: string;
+    category?: string;
+  }>;
+  certificates: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    description?: string;
+  }>;
 }
 
 export interface Suggestion {

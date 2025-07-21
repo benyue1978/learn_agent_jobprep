@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, Resume } from '@/lib/api';
+import BasicInfoSection from '@/components/resume/sections/BasicInfoSection';
+import EducationSection from '@/components/resume/sections/EducationSection';
+import ExperienceSection from '@/components/resume/sections/ExperienceSection';
+import SkillsSection from '@/components/resume/sections/SkillsSection';
+import CertificatesSection from '@/components/resume/sections/CertificatesSection';
 
 export default function EditPage() {
   const [resume, setResume] = useState<Resume | null>(null);
@@ -114,23 +119,17 @@ export default function EditPage() {
             </p>
           </div>
 
-          {/* Resume JSON Display */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              结构化简历数据
-            </h2>
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 max-h-96 overflow-auto">
-              <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-                {JSON.stringify(resume, null, 2)}
-              </pre>
-            </div>
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              这是 AI 解析后的结构化数据，后续将提供可视化的编辑界面
-            </p>
+          {/* Resume Sections */}
+          <div className="space-y-8">
+            <BasicInfoSection basicInfo={resume.basics} />
+            <EducationSection education={resume.education} />
+            <ExperienceSection work={resume.work} />
+            <SkillsSection skills={resume.skills} />
+            <CertificatesSection certificates={resume.certificates} />
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex gap-4 justify-center">
+          <div className="mt-8 flex gap-4 justify-center">
             <button
               onClick={() => router.push('/upload')}
               className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"

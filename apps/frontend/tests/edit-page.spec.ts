@@ -72,7 +72,11 @@ test.describe('Edit Page Tests', () => {
     await expect(page.locator('h1')).toContainText('简历编辑');
     
     // Check if resume data is displayed
-    await expect(page.locator('h2:has-text("结构化简历数据")')).toBeVisible();
+    await expect(page.locator('h2:has-text("基本信息")')).toBeVisible();
+    await expect(page.locator('h2:has-text("教育经历")')).toBeVisible();
+    await expect(page.locator('h2:has-text("工作经历")')).toBeVisible();
+    await expect(page.locator('h2:has-text("技能专长")')).toBeVisible();
+    await expect(page.locator('h2:has-text("证书认证")')).toBeVisible();
     await expect(page.locator('text=张三')).toBeVisible();
     await expect(page.locator('text=zhangsan@example.com')).toBeVisible();
     await expect(page.locator('text=清华大学')).toBeVisible();
@@ -186,5 +190,105 @@ test.describe('Edit Page Tests', () => {
     
     // Should navigate to test page
     await expect(page).toHaveURL('/test');
+  });
+
+  test('should display structured resume sections correctly', async ({ page }) => {
+    // Mock the API response with complete resume data
+    await page.route('**/api/resume', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          resume: {
+            basics: {
+              name: '张三',
+              email: 'zhangsan@example.com',
+              phone: '13800138000',
+              location: '北京',
+              summary: '经验丰富的软件工程师，专注于后端开发和系统架构设计。'
+            },
+            education: [
+              {
+                institution: '清华大学',
+                degree: '计算机科学学士',
+                field_of_study: '计算机科学与技术',
+                start_date: '2018-09',
+                end_date: '2022-07',
+                gpa: '3.8/4.0'
+              }
+            ],
+            work: [
+              {
+                company: '阿里巴巴',
+                position: '高级软件工程师',
+                start_date: '2022-08',
+                end_date: '2024-12',
+                description: '负责电商平台后端开发，处理高并发订单系统',
+                achievements: [
+                  '优化系统性能，提升响应速度30%',
+                  '设计并实现微服务架构'
+                ]
+              }
+            ],
+            skills: [
+              {
+                name: 'Java',
+                level: '高级',
+                category: '编程语言'
+              },
+              {
+                name: 'Spring Boot',
+                level: '高级',
+                category: '框架'
+              }
+            ],
+            certificates: [
+              {
+                name: 'AWS认证解决方案架构师',
+                issuer: 'Amazon Web Services',
+                date: '2023-06',
+                description: '云架构设计和部署认证'
+              }
+            ]
+          }
+        })
+      });
+    });
+
+    await page.goto('/edit');
+    
+    // Check if all sections are displayed
+    await expect(page.locator('h2:has-text("基本信息")')).toBeVisible();
+    await expect(page.locator('h2:has-text("教育经历")')).toBeVisible();
+    await expect(page.locator('h2:has-text("工作经历")')).toBeVisible();
+    await expect(page.locator('h2:has-text("技能专长")')).toBeVisible();
+    await expect(page.locator('h2:has-text("证书认证")')).toBeVisible();
+    
+    // Check basic info content
+    await expect(page.locator('text=张三')).toBeVisible();
+    await expect(page.locator('text=zhangsan@example.com')).toBeVisible();
+    await expect(page.locator('text=13800138000')).toBeVisible();
+    await expect(page.locator('text=北京')).toBeVisible();
+    await expect(page.locator('text=经验丰富的软件工程师')).toBeVisible();
+    
+    // Check education content
+    await expect(page.locator('text=清华大学')).toBeVisible();
+    await expect(page.locator('text=计算机科学学士')).toBeVisible();
+    await expect(page.locator('text=3.8/4.0')).toBeVisible();
+    
+    // Check work experience content
+    await expect(page.locator('text=阿里巴巴')).toBeVisible();
+    await expect(page.locator('text=高级软件工程师')).toBeVisible();
+    await expect(page.locator('text=负责电商平台后端开发')).toBeVisible();
+    await expect(page.locator('text=优化系统性能，提升响应速度30%')).toBeVisible();
+    
+    // Check skills content
+    await expect(page.locator('text=Java')).toBeVisible();
+    await expect(page.locator('text=Spring Boot')).toBeVisible();
+    await expect(page.locator('span:has-text("高级")').first()).toBeVisible();
+    
+    // Check certificates content
+    await expect(page.locator('text=AWS认证解决方案架构师')).toBeVisible();
+    await expect(page.locator('text=Amazon Web Services')).toBeVisible();
   });
 }); 
